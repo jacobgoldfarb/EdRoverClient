@@ -106,10 +106,10 @@ export default function ExpandedCard({open, program, onClose}) {
     return (<div className="ml-4">
       {ratingBarInformation.map(({label, percent}, index) => {
         return (
-          <div key={index} className="ml-8 mb-4">
+          <div key={index} className="mx-auto w-5/6 mb-4">
             <div className="mb-2">{label}</div>
-            <div className="flex">
-              <div className="flex w-3/4 items-center">
+            <div className="flex ">
+              <div className="flex w-full items-center">
                 <div className={`w-3/4 h-4 bg-blue-700 rounded-xl z-10`}></div>
                 <div className={`w-1/4 mr-2 -ml-1 w-1/4 h-4 bg-gray-300 rounded-r-xl`}></div>
               </div>
