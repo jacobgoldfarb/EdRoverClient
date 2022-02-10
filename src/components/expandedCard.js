@@ -17,6 +17,7 @@ export default function ExpandedCard({open, program, onClose}) {
   
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyBQGTNOnMfl1Gk-4D8VWaB2-H5yuFFMM44",
   })
 
   const onLoad = useCallback(function callback(map) {
