@@ -78,8 +78,8 @@ export default function ExpandedCard({open, program, onClose}) {
       <div className="text-xl font-medium mt-10 mb-4">
         Breakdown
       </div>
-      {points.map((point) => (
-        <div className="flex mb-2 items-center">
+      {points.map((point, index) => (
+        <div key={index} className="flex mb-2 items-center">
           <div className="mr-2 w-4 h-4 bg-violet-700 rounded-full"></div>
           <div>{point}</div> 
         </div>
@@ -103,9 +103,9 @@ export default function ExpandedCard({open, program, onClose}) {
       },
     ]
     return (<div className="ml-4">
-      {ratingBarInformation.map(({label, percent}) => {
+      {ratingBarInformation.map(({label, percent}, index) => {
         return (
-          <div className="ml-8 mb-4">
+          <div key={index} className="ml-8 mb-4">
             <div className="mb-2">{label}</div>
             <div className="flex">
               <div className="flex w-3/4 items-center">
@@ -126,21 +126,18 @@ export default function ExpandedCard({open, program, onClose}) {
         <div className="w-16 h-14 rounded-full bg-gray-100"></div>
         <div className="ml-4">{text}</div>
         <div>
-          {ratings.map(({label, percent}) => ratingDotBar(label, percent))}
-          {/* {ratingDotBar("Liked", 0.8)}
-          {ratingDotBar("Useful", 1.0)}
-          {ratingDotBar("Easy", 0.4)} */}
+          {ratings.map(({label, percent}, index) => ratingDotBar(label, percent, index))}
         </div>
       </div>
     </div>
   )
 
-  const ratingDotBar = (label, level) => {
+  const ratingDotBar = (label, level, key) => {
     const numDots = 5
-    return (<div className="flex items-center">
+    return (<div key={key} className="flex items-center">
     <div className="flex ml-6 mr-2">
-      {[...Array(level * numDots).keys()].map(_ => <div className="mr-1 w-4 h-4 bg-violet-700 rounded-full"></div>)}
-      {[...Array(5 - level * numDots).keys()].map(_ => <div className="mr-1 w-4 h-4 bg-gray-300 rounded-full"></div>)}
+      {[...Array(level * numDots).keys()].map(key => <div key={key} className="mr-1 w-4 h-4 bg-violet-700 rounded-full"></div>)}
+      {[...Array(5 - level * numDots).keys()].map(key => <div key={key} className="mr-1 w-4 h-4 bg-gray-300 rounded-full"></div>)}
     </div>
     <div className="ml-2">
       {label}
