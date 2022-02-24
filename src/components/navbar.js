@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import NavSearchBar from './search/nav-search-bar'
 
 export default function Navbar({selected}) {
 
@@ -7,11 +8,9 @@ export default function Navbar({selected}) {
             <div className="ml-10">
                 <Logo/>
             </div>
+            <NavSearchBar onChange={()=>{}} onSeach={()=>{}} shouldHide={false}/>
             <div className="flex items-center">
-                <NavItem selected={selected==0} value={'Home'} path={'/'}/>
-                {/* <NavItem selected={selected==1} value={'Explore'} path={'/explore'}/>
-                <NavItem selected={selected==2} value={'Match'} path={'/match'}/> */}
-                <NavItem selected={selected==3} value={'Search'} path={'/search'}/>
+                <NavItem selected={selected==3} value={'Login'} path={'/search'}/>
             </div>
         </div>
     )

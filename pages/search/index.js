@@ -3,34 +3,45 @@ import Navbar from '../../src/components/navbar'
 import ExpandedCard from '../../src/components/expandedCard'
 import Card from '../../src/components/search/card'
 import FilterBar from '../../src/components/search/filter-bar'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useState } from 'react'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+
+import { searchPrograms } from '../../api/search'
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/dist/client/router'
 import temp_card_data from "../../src/utils/temp_card_data.json"
+import { text } from '@fortawesome/fontawesome-svg-core'
+
 export default function Search() {
 
-  const [ searchTerms, setSearchTerms ] = useState("")
   const [ cardDetails, setCardDetails ] = useState([])
   const [ activeProgram, setActiveProgram ] = useState(null);
   const [ programCardOpen, setProgramCardOpen ] = useState(false);
   
-  const handleSearch = () => {
-    console.log("Handling search for text: ", searchTerms)
-    // 1. Call API
-    // 2. Retrieve response
-    // 3. Map response array to cardDetails elements (each is a prop to Card)
+  const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
+
+  const router = useRouter()
+
+  useEffect(async () => {
+    // await searchPrograms(router.query.query)
+    setCardDetails(temp_card_data.program_cards);
     console.log(temp_card_data)
-    setCardDetails(temp_card_data)
-  }
+  })
   
   const handleCardClick = (index) => {
-    setActiveProgram(cardDetails[index])
+    console.log("cardDetails[index]", index)
+    setActiveProgram({...cardDetails[index], thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
     setProgramCardOpen(true)
   }
 
-  const closeExpandedCard =( ) => {
+  const closeExpandedCard = () => {
     setActiveProgram(null)
     setProgramCardOpen(false)
+  }
+
+  const truncateLongDesc = (text) => {
+    if (text.length > 300) {
+      text = text.substring(0, 300) + "..."
+    }
+    return text
   }
 
   return (
@@ -43,32 +54,24 @@ export default function Search() {
       <FilterBar/>
       
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20">
-        <div hidden={programCardOpen} className='self-center justify-self-center mt-44 mb-14 w-full'>
-          <form >
-            <label>
-              <div>
-                <input className="pl-7 w-1/2 h-10 rounded-2xl" type="text" placeholder='Search' onChange={(e) => setSearchTerms(e.target.value)} />
-                <FontAwesomeIcon className="cursor-pointer -ml-7 text-gray-600 w-10 h-10 " icon={faSearch} onClick={handleSearch} />
-              </div>
-            </label>
-            {/* <input type="submit" value="Submit" /> */}
-          </form>
-        </div>
         <div>
           <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard}/>
         </div>
-        {!programCardOpen && <div className="w-full mx-auto mb-10 items-center flex flex-wrap justify-center gap-14">
+        {!programCardOpen && 
+        <div className="w-full mx-auto mt-28 mb-10 items-center flex flex-wrap justify-center gap-14">
           {
-            cardDetails.map((detail, index) => {
-              const {programName, schoolName, bulletPoints, descPreview, thumbnailUrl } = detail
+            cardDetails?.map((detail, index) => {
+            const {program_key, program_name, uni_name, description, image_url } = detail
+            const descriptionPreview = truncateLongDesc(description)
               return (<Card 
-                key={index}
-                id={index}
-                programName={programName}
-                schoolName={schoolName}
-                bulletPoints={bulletPoints}
-                descPreview={descPreview}
-                thumbnailUrl={thumbnailUrl} 
+                key={program_key}
+                id={program_key}
+                index={index}
+                programName={program_name}
+                schoolName={uni_name}
+                descPreview={descriptionPreview}
+                thumbnailUrl={"https://i.ibb.co/SRwz8gK/watelroo-Image.png"}
+                topColor={colors[index%colors.length]}
                 handleLearnMore={handleCardClick}
               />)
             })

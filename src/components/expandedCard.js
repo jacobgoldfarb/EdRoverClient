@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Wrapper, Status } from "@googlemaps/react-wrapper";
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import { getProgram } from '../../api/search'
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
@@ -10,11 +10,11 @@ export default function ExpandedCard({open, program, onClose}) {
 
   const [addedBookmark, setAddedBookmark] = useState(false)
   const [map, setMap] = useState(null);
+  const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
 
   const addBookmark = () => {
     setAddedBookmark(!addedBookmark)
   }
-  
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyBQGTNOnMfl1Gk-4D8VWaB2-H5yuFFMM44",
@@ -64,11 +64,11 @@ export default function ExpandedCard({open, program, onClose}) {
     <div className="flex">
       <div className="flex flex-col">
         <h1 className="mb-5 text-xl">
-          <span className="font-semibold">{program.programName}</span>
+          <span className="font-semibold">{program.program_name}</span>
           {' - '}  
-          <span className="italic">{program.schoolName}</span>
+          <span className="italic">{program.uni_name}</span>
         </h1>
-        <p>{program.descPreview}</p>
+        <p>{program.description}</p>
       </div>
     </div>
   </div>)
@@ -121,8 +121,10 @@ export default function ExpandedCard({open, program, onClose}) {
     </div>)
   }
 
-  const review = (text, ratings) => (
-    <div className="shadow-xl mt-8 w-5/6 mx-auto rounded-xl bg-white border-t-[18px] border-lime-200 p-4">
+  const review = (text, ratings, index) => {
+    const borderColor = colors[index % colors.length]
+    return (
+    <div className={`shadow-xl mt-8 w-5/6 mx-auto rounded-xl bg-white border-t-16 border-${borderColor} p-4`}>
       <div className="flex items-center">
         <div className="w-16 h-14 rounded-full bg-gray-100"></div>
         <div className="ml-4">{text}</div>
@@ -131,7 +133,7 @@ export default function ExpandedCard({open, program, onClose}) {
         </div>
       </div>
     </div>
-  )
+  )}
 
   const ratingDotBar = (label, level, key) => {
     const numDots = 5
@@ -146,9 +148,33 @@ export default function ExpandedCard({open, program, onClose}) {
   </div>)
   }
 
+  const locationCard = () =>  (
+    <>
+    <div className='h-1 w-full bg-violet-700'/>
+      <div className="text-xl font-medium mt-10 ml-8 mb-8">
+        Location
+      </div>
+      <div className="ml-8">
+        <div className="font-bold">Oshawa Campus</div>
+        <div className="w-56">2000 Simcoe Street North Oshawa, Ontario L1G 0C5</div>
+        <GoogleMap
+          mapContainerStyle={{
+            width: '50%',
+            height: '400px',
+            margin: '15px auto'
+          }}
+          center={{lat: 43.471921, lng: -80.524585}}
+          zoom={16}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        ></GoogleMap>
+      </div>
+    </>
+  )
+
   return (
       <>
-        {open && <div className={"flex-col rounded-lg py-8 mt-40 mx-28  mb-8 bg-white shadow text-left"}>
+        {open && <div className={"flex-col rounded-lg py-8 mt-40 w-5/6 mx-auto  min-w-2/3 mb-8 bg-white shadow text-left"}>
           <FontAwesomeIcon onClick={onClose} className="cursor-pointer ml-8" size="2x" icon={faTimes} />
             <section className="px-8">
               <div className="flex">
@@ -167,38 +193,23 @@ export default function ExpandedCard({open, program, onClose}) {
                 {ratingBars()}
                 {review(
                   "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview
+                  mockReview,
+                  0
                   )}
                   {review(
                   "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview
+                  mockReview,
+                  1
                   )}
                   {review(
                   "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview
+                  mockReview,
+                  2
                   )}
               </div>
             </section>
             <section>
-              <div className='h-1 w-full bg-violet-700'/>
-              <div className="text-xl font-medium mt-10 ml-8 mb-8">
-                Location
-              </div>
-              <div className="ml-8">
-                <div className="font-bold">Oshawa Campus</div>
-                <div className="w-56">2000 Simcoe Street North Oshawa, Ontario L1G 0C5</div>
-                <GoogleMap
-                  mapContainerStyle={{
-                    width: '50%',
-                    height: '400px',
-                    margin: '15px auto'
-                  }}
-                  center={{lat: 43.471921, lng: -80.524585}}
-                  zoom={16}
-                  onLoad={onLoad}
-                  onUnmount={onUnmount}
-                ></GoogleMap>
-              </div>
+              {locationCard()}
             </section> 
         </div>}
       </>

@@ -2,8 +2,8 @@ const colors = require('tailwindcss/colors')
 const defaultTheme = require('tailwindcss/defaultTheme')
 
 module.exports = {
-  mode: 'jit',
-  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './pages/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}'],
+  // mode: 'jit',
+  purge: ['./pages/**/*.{js,ts,jsx,tsx}', './pages/*.{js,ts,jsx,tsx}', './src/components/**/*.{js,ts,jsx,tsx}', './src/components/*.{js,ts,jsx,tsx}'],
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
@@ -34,6 +34,17 @@ module.exports = {
         '1/4': '25%',
         '1/5': '20%',
       },
+      borderWidth: {
+        DEFAULT: '1px',
+        '0': '0',
+        '2': '2px',
+        '3': '3px',
+        '4': '4px',
+        '6': '6px',
+        '8': '8px',
+        '16': '16px',
+        ...defaultTheme.borderWidth,
+      }
     },
   },
   variants: {

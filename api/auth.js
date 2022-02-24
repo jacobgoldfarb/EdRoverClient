@@ -70,4 +70,5 @@ const getUserData = async (uid) => {
     }
 };
 
+
 export { createAccount, signIn, getAuthenticatedUser, createUser, getUserData };
