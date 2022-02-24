@@ -10,6 +10,7 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
         style={{
             minHeight: "22rem",
             maxHeight: "22rem",
+            minWidth: "20rem"
         }}
         >
         <div className={`bg-${topColor} w-full h-8 rounded-t-xl mb-3`}/>

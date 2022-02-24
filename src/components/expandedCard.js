@@ -174,7 +174,7 @@ export default function ExpandedCard({open, program, onClose}) {
 
   return (
       <>
-        {open && <div className={"flex-col rounded-lg py-8 mt-40 w-5/6 mx-auto  min-w-2/3 mb-8 bg-white shadow text-left"}>
+        {open && <div className={"flex-col rounded-lg py-8 mt-16 w-5/6 mx-auto  min-w-2/3 mb-8 bg-white shadow text-left"}>
           <FontAwesomeIcon onClick={onClose} className="cursor-pointer ml-8" size="2x" icon={faTimes} />
             <section className="px-8">
               <div className="flex">
