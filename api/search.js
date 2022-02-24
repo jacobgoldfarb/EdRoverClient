@@ -1,8 +1,9 @@
 const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/search')
 
-const searchPrograms = async (query) => {
+const searchPrograms = async (query, offset) => {
+    if (!offset) { offset = 0 }
     if (!query) { return Error("no query") }
-    const url = SERVICE_URL + "?query=" + query
+    const url = SERVICE_URL + "?query=" + query + "&limit=50" + "&offset=" + offset
     var requestOptions = {
         method: 'GET',
         redirect: 'follow'
