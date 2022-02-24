@@ -20,14 +20,23 @@ export default function Search() {
 
   const router = useRouter()
 
-  useEffect(async () => {
-    // await searchPrograms(router.query.query)
-    setCardDetails(temp_card_data.program_cards);
-    console.log(temp_card_data)
-  })
+  useEffect(() => {
+    handleNewSearch(router.query.query)
+  }, [])
+
+  const handleNewSearch = async (query) => {
+    const programs = await searchPrograms(query)
+    if (programs instanceof Error ) {
+      return
+    }
+    router.push({
+      pathname: '/search',
+      query: { query: query },
+    })
+    setCardDetails(programs.program_cards);
+  }
   
   const handleCardClick = (index) => {
-    console.log("cardDetails[index]", index)
     setActiveProgram({...cardDetails[index], thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
     setProgramCardOpen(true)
   }
@@ -38,6 +47,7 @@ export default function Search() {
   }
 
   const truncateLongDesc = (text) => {
+    if (!text) { return text }
     if (text.length > 300) {
       text = text.substring(0, 300) + "..."
     }
@@ -50,7 +60,7 @@ export default function Search() {
         <title>EdRover</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar selected={3}/>
+      <Navbar onSearch={handleNewSearch} selected={3}/>
       <FilterBar/>
       
       <div className="flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20">

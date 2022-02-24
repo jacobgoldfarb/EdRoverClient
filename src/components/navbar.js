@@ -1,14 +1,14 @@
 import Link from 'next/link'
 import NavSearchBar from './search/nav-search-bar'
 
-export default function Navbar({selected}) {
+export default function Navbar({selected, onSearch}) {
 
     return (
         <div className="max-w-full flex justify-between container fixed shadow-bottom bg-white h-20 z-20">
             <div className="ml-10">
                 <Logo/>
             </div>
-            <NavSearchBar onChange={()=>{}} onSeach={()=>{}} shouldHide={false}/>
+            <NavSearchBar onSearch={onSearch} shouldHide={false}/>
             <div className="flex items-center">
                 <NavItem selected={selected==3} value={'Login'} path={'/search'}/>
             </div>
