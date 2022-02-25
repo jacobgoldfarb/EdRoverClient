@@ -23,6 +23,6 @@ function NavItem({value, path, selected}) {
 
 function Logo() {
     return <Link href={'/'}>
-        <div className="p-5 text-3xl text-white font-sans font-bold cursor-pointer"> {'EdRover'}</div>
+        <div className="p-5 text-3xl text-white  font-semibold font-body cursor-pointer"> {'EdRover'}</div>
     </Link>
 }

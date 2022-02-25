@@ -2,7 +2,7 @@ import Head from 'next/head'
 import LandingNavbar from '../src/components/landing-navbar'
 import Image from 'next/image'
 import { createAccount, createUser, getAuthenticatedUser, getUserData, signIn } from '../api/auth'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Dropdown from 'react-dropdown';
 import 'react-dropdown/style.css';
 import { useRouter } from 'next/router'
@@ -116,7 +116,7 @@ export default function Login() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {/* <Navbar selected={0}/> */}
-      <LandingNavbar selected={0}/>
+      <LandingNavbar selected={0} authenticated={false}/>
     
         <div className="min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20">
             <header className="font-header text-white text-3xl mx-5 mt-4">

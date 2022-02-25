@@ -1,5 +1,4 @@
 import Head from 'next/head'
-import Navbar from '../src/components/navbar'
 import LandingNavbar from '../src/components/landing-navbar'
 import SearchBar from '../src/components/search/search-bar'
 import Image from 'next/image'
@@ -10,12 +9,7 @@ import { useRouter } from 'next/router'
 export default function Home() {
 
   const [user, setUser] = useState(null)
-  const [email, setEmail] = useState("")
-  const [name, setName] = useState("")
   const [query, setQuery] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [errorMessage, setErrorMessage] = useState("")
 
   const router = useRouter()
 
@@ -25,26 +19,6 @@ export default function Home() {
       setUser(userData)
     })
   }, [setUser])
-
-  const handleSignUp = async (e) => {
-    e.preventDefault()
-    if (confirmPassword != password) {
-      setErrorMessage("Passwords do not match.")
-      return
-    }
-    const resp = await createAccount(email, password)
-    if (resp instanceof Error) {
-      setErrorMessage("There was a problem creating this account.")
-      return
-    }
-    const user = resp
-    if ( user?.accessToken ) {
-        createUser(email, user, name);
-        setErrorMessage("Success")
-    } else {
-        setErrorMessage(user?.message)
-    }
-  }
 
   const handleSearchChange = (e) => {
     setQuery(e.target.value);

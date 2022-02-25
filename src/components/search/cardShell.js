@@ -1,16 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 
-export default function Card({programName, schoolName, bulletPoints, descPreview, thumbnailUrl, handleLearnMore, id, index, topColor}) {
-
-    function getImage() {
-        return <div className="w-full h-20" style={{
-            backgroundImage: `url(${thumbnailUrl})`,
-            backgroundSize: 'contain',
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center'
-        }} />
-    }
+export default function CardShell() {
 
   return (
       <div 
@@ -23,27 +14,21 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
         }}
         >
         <div className={`bg-${topColor} w-full h-8 rounded-t-xl mb-3`}/>
-        {getImage()}
+        <div className="w-full h-20" style={{
+            backgroundImage: `url(${thumbnailUrl})`,
+            backgroundSize: 'contain',
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center'
+        }}/>
         <div>
             <div className="font-medium px-3">
-                {programName} 
+                {"......"} 
             </div>
             <div className='italic mt-4 px-3'>
-                {schoolName}
-            </div>
-            <div className="px-3 text-left ml-2 my-2">
-                {
-                    bulletPoints?.map((point, index) => {
-                        return (
-                            <div key={index}>
-                                {`• ${point}`}
-                            </div>
-                        )
-                    })
-                }
+                {".........."}
             </div>
             <div className="p-3 text-left text-sm">
-                {descPreview}
+                {"......................."}
             </div>
             <div className="w-full cursor-pointer flex items-center" onClick={() => handleLearnMore(id)}>
                 <div className="ml-auto mr-3 mb-3">
@@ -55,4 +40,5 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
           
       </div>
   )
+
 }

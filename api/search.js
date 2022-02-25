@@ -11,7 +11,6 @@ const searchPrograms = async (query, offset, filters) => {
         method: 'GET',
         redirect: 'follow'
       };
-    console.log("url", url)
     const resp = await fetch(url, requestOptions)
     if (resp.status != 200) {
       return Error(resp.statusText)
