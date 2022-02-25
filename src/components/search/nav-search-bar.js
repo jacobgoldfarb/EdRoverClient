@@ -2,7 +2,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
 
-export default function NavSearchBar({ onSearch, shouldHide}) {
+export default function NavSearchBar({ defaultQuery, onSearch, shouldHide}) {
 
     const [query, setQuery] = useState('')
 
@@ -20,10 +20,12 @@ export default function NavSearchBar({ onSearch, shouldHide}) {
             <input 
             className="pl-7 h-10 text-left w-full rounded-2xl bg-gray-200" 
             type="text" 
-            placeholder='Search' 
+            placeholder={"Search"}
             onChange={updateQuery} 
             onKeyDown={handleKeyDown}
+            defaultValue={defaultQuery}
             />
+            
             <FontAwesomeIcon 
             className="cursor-pointer -ml-7 text-gray-600 w-10 h-10 " 
             icon={faSearch} 

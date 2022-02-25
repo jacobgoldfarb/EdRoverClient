@@ -10,6 +10,7 @@ import { searchPrograms } from '../../api/search'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router'
 import { faSadTear } from '@fortawesome/free-solid-svg-icons'
+import { getAuthenticatedUser, getUserData } from '../../api/auth'
 
 export default function Search() {
 
@@ -21,6 +22,7 @@ export default function Search() {
   const [ filters, setFilters ] = useState([]);
   const [ loadedAll, setLoadedAll] = useState(false)
   const [loading, setLoading] = useState(true)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const limit = 30  
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
 
@@ -34,6 +36,10 @@ export default function Search() {
       return
     }
     setCardDetails([...programs.program_cards]);
+
+    await getAuthenticatedUser((_) => {
+      setIsAuthenticated(true)
+    })
     setLoading(false)
   }, [router])
 
@@ -145,7 +151,7 @@ export default function Search() {
         <title>EdRover</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar onSearch={handleNewSearch} selected={3} authenticated={true}/>
+      <Navbar onSearch={handleNewSearch} defaultQuery={router.query?.query || ""} selected={3} authenticated={isAuthenticated}/>
       
       <div className={"flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20 "}>
         <div>

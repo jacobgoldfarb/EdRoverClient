@@ -2,7 +2,8 @@ import Head from 'next/head'
 import LandingNavbar from '../src/components/landing-navbar'
 import SearchBar from '../src/components/search/search-bar'
 import Image from 'next/image'
-import { createAccount, createUser, getAuthenticatedUser, getUserData } from '../api/auth'
+
+import { getAuthenticatedUser, getUserData } from '../api/auth'
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 
@@ -42,7 +43,7 @@ export default function Home() {
         <title>EdRover</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <LandingNavbar selected={0}/>
+      <LandingNavbar selected={0} authenticated={!!user}/>
     
       <div className="min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20">
         <header className="font-header text-white text-3xl mx-5 mt-4">

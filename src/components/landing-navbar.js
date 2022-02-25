@@ -1,6 +1,7 @@
 import Link from 'next/link'
+import LandingAccountDropdown from './landing-account-dropdown'
 
-export default function LandingNavbar({selected}) {
+export default function LandingNavbar({selected, authenticated}) {
 
     return (
         <div className="max-w-full flex justify-between container fixed h-20 z-20">
@@ -8,7 +9,8 @@ export default function LandingNavbar({selected}) {
                 <Logo/>
             </div>
             <div className="flex items-center mr-6">
-                <NavItem selected={selected==3} value={'Login'} path={'/login'}/>
+                { !authenticated && <NavItem selected={selected==3} value={'Login'} path={'/login'}/>}
+                { authenticated && <LandingAccountDropdown className={"mx-8 cursor-pointer"}/>}
             </div>
         </div>
     )
