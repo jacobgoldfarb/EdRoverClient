@@ -1,15 +1,17 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { getProgram } from '../../api/search'
+import { getAuthenticatedUser, getUserData } from '../../api/auth'
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 
 export default function ExpandedCard({open, program, onClose}) {
 
   const [addedBookmark, setAddedBookmark] = useState(false)
   const [map, setMap] = useState(null);
+  const [user, setUser] = useState(null);
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
 
   const addBookmark = () => {
@@ -172,6 +174,12 @@ export default function ExpandedCard({open, program, onClose}) {
     </>
   )
 
+  const addReviewButton = () => (
+    <div>
+      Add Review
+    </div>
+  )
+
   return (
       <>
         {open && <div className={"flex-col rounded-lg py-8 mt-16 w-2/3 mx-auto  min-w-2/3 mb-8 bg-white shadow text-left"}>
@@ -206,6 +214,7 @@ export default function ExpandedCard({open, program, onClose}) {
                   mockReview,
                   2
                   )}
+                  {addReviewButton()}
               </div>
             </section>
             <section>

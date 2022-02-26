@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router'
 import { faSadTear } from '@fortawesome/free-solid-svg-icons'
 import { getAuthenticatedUser, getUserData } from '../../api/auth'
+import { getProgram } from '../../api/search'
 
 export default function Search() {
 
@@ -23,38 +24,42 @@ export default function Search() {
   const [ loadedAll, setLoadedAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
+  const [userData, setUserData] = useState(null)
   const limit = 30  
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
 
   const router = useRouter()
 
   useEffect( async () => {
-    setCurrentQuery(router.query.query)
-    const programs = await searchPrograms(router.query.query, offset, filters)
-    if (programs instanceof Error ) {
-      setLoading(false)
-      return
-    }
-    setCardDetails([...programs.program_cards]);
-
-    await getAuthenticatedUser((_) => {
+    await fetchPrograms(router.query.query)
+    await getAuthenticatedUser( async (authUser) => {
+      const userData = await getUserData(authUser.uid)
+      setUserData(userData)
       setIsAuthenticated(true)
     })
     setLoading(false)
   }, [router])
 
-  const handleNewSearch = async (query) => {
-    setLoading(true)
+  const fetchPrograms = async (query) => {
     setCurrentQuery(query)
-    const programs = await searchPrograms(query, offset, filters)
+    const programs = await searchPrograms(query, offset, limit, filters)
     if (programs instanceof Error ) {
       return
     }
+    setCardDetails([...programs.program_cards]);
+    if (Number(programs?.program_cards.length) < limit) {
+      setLoadedAll(true)
+    }
+  }
+
+  const handleNewSearch = async (query) => {
+    setLoading(true)
+    await fetchPrograms(query)
+
     router.push({
       pathname: '/search',
       query: { query: query },
     }, undefined, {shallow: true})
-    setCardDetails([...programs.program_cards]);
     setLoading(false)
   }
 
@@ -64,7 +69,7 @@ export default function Search() {
     if (programs instanceof Error ) {
       return
     }
-    if (programs?.program_cards.length == 0) {
+    if (programs?.program_cards.length < limit) {
       setLoadedAll(true)
     }
     setOffset(offset + limit)
@@ -72,9 +77,11 @@ export default function Search() {
     setLoading(false)
   }
   
-  const handleCardClick = (index) => {
-    setActiveProgram({...cardDetails[index], thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
+  const handleCardClick = async (index) => {
+    const selectedProgram = cardDetails[index]
+    setActiveProgram({...selectedProgram, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
     setProgramCardOpen(true)
+    const fullProgram = await getProgram(selectedProgram.program_key)
   }
 
   const closeExpandedCard = () => {
@@ -126,17 +133,17 @@ export default function Search() {
     cardDetails.length > 0 && !programCardOpen && !loadedAll 
   )
 
-  const getLoadMore = () => (
-    showLoadMore() && <div onClick={handleLoadMore} className="cursor-pointer text-white my-5">
+  const getLoadMore = () => {
+    return (showLoadMore() && <div onClick={handleLoadMore} className="cursor-pointer text-white my-5">
       Load More
-    </div>
-  )
+    </div>)
+  }
 
   const getEmptySetIndicator = () => (
     !loading && cardDetails.length == 0 && 
     <>
       <FontAwesomeIcon 
-        size={'xl'} 
+
         className="mx-auto text-white mb-4" 
         icon={faSadTear}
         style={{width: "5rem", height: "5rem"}}
