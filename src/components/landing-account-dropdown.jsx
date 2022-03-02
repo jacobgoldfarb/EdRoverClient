@@ -18,7 +18,7 @@ export default function LandingAccountDropdown({className}) {
 
     return (
         <>
-            <div children className={"mt-6 rounded-xl bg-white flex flex-col" + " " + className + (isExpanded ? " mt-32 shadow-xl " : "")}>
+            <div className={"mt-6 rounded-xl bg-white flex flex-col" + " " + className + (isExpanded ? " mt-32 shadow-xl " : "")}>
                 <div className="p-5 flex items-baseline cursor-pointer" onClick={handleExpand}>
                     <div>{"Account"}</div>
                     <FontAwesomeIcon className="ml-2 mr-2" icon={faChevronDown}/>

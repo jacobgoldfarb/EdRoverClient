@@ -18,7 +18,7 @@ export default function AccountDropdown({className}) {
 
     return (
         <>
-            <div children className={"rounded bg-white flex flex-col" + " " + className + (isExpanded ? " mt-24 shadow-xl " : "")}>
+            <div className={"rounded bg-white flex flex-col" + " " + className + (isExpanded ? " mt-24 shadow-xl " : "")}>
                 <div className="p-5 flex items-baseline cursor-pointer" onClick={handleExpand}>
                     <div>{"Account"}</div>
                     <FontAwesomeIcon className="ml-2 mr-2" icon={faChevronDown}/>
