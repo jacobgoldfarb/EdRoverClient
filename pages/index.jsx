@@ -16,6 +16,7 @@ export default function Home() {
 
   useEffect( async () => {
     await getAuthenticatedUser(async (authUser) => {
+      if (!authUser) { return }
       const userData = await getUserData(authUser.uid)
       setUser(userData)
     })

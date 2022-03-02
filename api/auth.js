@@ -1,4 +1,4 @@
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut,
      setPersistence, browserLocalPersistence, onAuthStateChanged} from "firebase/auth";
 import { collection, query, where, getDocs, doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
 import { db } from "./firebase"
@@ -30,6 +30,12 @@ const signIn = async (email, password) => {
      .catch((error) => {
         return error;
     });
+    return userCred
+}
+
+const logOut = async () => {
+    const auth = getAuth();
+    var userCred = await signOut(auth)
     return userCred
 }
 
@@ -71,4 +77,4 @@ const getUserData = async (uid) => {
 };
 
 
-export { createAccount, signIn, getAuthenticatedUser, createUser, getUserData };
+export { createAccount, signIn, getAuthenticatedUser, createUser, getUserData, logOut };

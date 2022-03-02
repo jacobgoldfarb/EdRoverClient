@@ -18,6 +18,7 @@ const searchPrograms = async (query, offset, limit, filters) => {
     return Error(resp.statusText)
   }
   const body = await resp.json()
+  console.log(body)
   return body
 }
 

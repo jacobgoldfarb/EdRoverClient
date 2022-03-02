@@ -1,12 +1,20 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react'
+import { logOut } from '../../api/auth'
+import { useRouter } from 'next/router'
 
 export default function AccountDropdown({className}) {
 
     const [isExpanded, setIsExpanded] = useState(false)
+    const router = useRouter()
 
     const handleExpand = () => setIsExpanded(!isExpanded)
+
+    const handleLogOut = () => {
+        router.push('/')
+        logOut()
+    }
 
     return (
         <>
@@ -21,7 +29,7 @@ export default function AccountDropdown({className}) {
                     <hr/>
                     <div className="mt-2"> {"Bookmarks"} </div>
                     <hr/>
-                    <div className="my-2"> {"Log Out"} </div>
+                    <div className="my-2" onClick={handleLogOut}> {"Log Out"} </div>
                 </div>}
             </div>
         </>

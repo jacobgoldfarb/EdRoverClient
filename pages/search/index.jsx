@@ -7,11 +7,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { searchPrograms } from '../../api/search'
+import { getProgram } from '../../api/programs'
+import { getAuthenticatedUser, getUserData } from '../../api/auth'
+
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router'
+
 import { faSadTear } from '@fortawesome/free-solid-svg-icons'
-import { getAuthenticatedUser, getUserData } from '../../api/auth'
-import { getProgram } from '../../api/search'
 
 export default function Search() {
 
@@ -33,6 +35,7 @@ export default function Search() {
   useEffect( async () => {
     await fetchPrograms(router.query.query)
     await getAuthenticatedUser( async (authUser) => {
+      if (!authUser) { return }
       const userData = await getUserData(authUser.uid)
       setUserData(userData)
       setIsAuthenticated(true)
@@ -79,7 +82,8 @@ export default function Search() {
   
   const handleCardClick = async (index) => {
     const selectedProgram = cardDetails[index]
-    setActiveProgram({...selectedProgram, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
+    const fullProgramDetails = await getProgram(selectedProgram.program_key)
+    setActiveProgram({...fullProgramDetails, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
     setProgramCardOpen(true)
     const fullProgram = await getProgram(selectedProgram.program_key)
   }

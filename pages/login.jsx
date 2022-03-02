@@ -33,7 +33,7 @@ export default function Login() {
     const user = resp
     if ( user?.accessToken ) {
         createUser(email, user, name);
-        router.push('/search')
+        router.push('/')
     } else {
         setErrorMessage(user?.message)
     }
@@ -45,7 +45,7 @@ export default function Login() {
     if (resp instanceof Error) {
         setErrorMessage("Invalid credentials.")
     } else {
-          router.push('/search')
+          router.push('/')
       }
   }
 

@@ -1,7 +1,5 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-import { getProgram } from '../../api/search'
-import { getAuthenticatedUser, getUserData } from '../../api/auth'
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
@@ -10,28 +8,25 @@ import { useState, useCallback, useEffect } from 'react'
 export default function ExpandedCard({open, program, onClose}) {
 
   const [addedBookmark, setAddedBookmark] = useState(false)
-  const [map, setMap] = useState(null);
-  const [user, setUser] = useState(null);
+  const [programData, setProgramData] = useState(null)
+  const [schoolCoords, setSchoolCoords] = useState(null)
+  const [universityData, setUniversityData] = useState(null)
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
+
+  useEffect(() => { 
+    if (!program) { return }
+    setProgramData(program.data.program_data)
+    setUniversityData(program.data.uni_data)
+    const coords = program.data.uni_data.google_maps_url.split("/").pop().split(",")
+    setSchoolCoords({
+      lat: Number(coords[0]),
+      lng: Number(coords[1]),
+    })
+  }, [program])
 
   const addBookmark = () => {
     setAddedBookmark(!addedBookmark)
   }
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBQGTNOnMfl1Gk-4D8VWaB2-H5yuFFMM44",
-  })
-
-  const onLoad = useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
-    setMap(map)
-  }, [])
-
-  const onUnmount = useCallback(function callback(map) {
-    setMap(null)
-  }, [])
-
   
   const mockReview = [
     {
@@ -66,11 +61,11 @@ export default function ExpandedCard({open, program, onClose}) {
     <div className="flex">
       <div className="flex flex-col">
         <h1 className="mb-5 text-xl">
-          <span className="font-semibold">{program.program_name}</span>
+          <span className="font-semibold">{programData?.degree}</span>
           {' - '}  
-          <span className="italic">{program.uni_name}</span>
+          <span className="italic">{universityData?.name}</span>
         </h1>
-        <p>{program.description}</p>
+        <p>{programData?.notes ?? programData?.description}</p>
       </div>
     </div>
   </div>)
@@ -150,30 +145,6 @@ export default function ExpandedCard({open, program, onClose}) {
   </div>)
   }
 
-  const locationCard = () =>  (
-    <>
-    <div className='h-1 w-full bg-violet-700'/>
-      <div className="text-xl font-medium mt-10 ml-8 mb-8">
-        Location
-      </div>
-      <div className="ml-8">
-        <div className="font-bold">Oshawa Campus</div>
-        <div className="w-56">2000 Simcoe Street North Oshawa, Ontario L1G 0C5</div>
-        <GoogleMap
-          mapContainerStyle={{
-            width: '50%',
-            height: '400px',
-            margin: '15px auto'
-          }}
-          center={{lat: 43.471921, lng: -80.524585}}
-          zoom={16}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-        ></GoogleMap>
-      </div>
-    </>
-  )
-
   const addReviewButton = () => (
     <div>
       Add Review
@@ -187,7 +158,7 @@ export default function ExpandedCard({open, program, onClose}) {
             <section className="px-8">
               <div className="flex">
                 {header()}
-                {breakdown()}
+                {/* {breakdown()} */}
                 <FontAwesomeIcon onClick={addBookmark} className={`cursor-pointer -mt-10 text-right ml-auto ${addedBookmark && "text-amber-500"}`} size="2x" icon={faBookmark} />
               </div>
               {desc()}
@@ -218,10 +189,51 @@ export default function ExpandedCard({open, program, onClose}) {
               </div>
             </section>
             <section>
-              {locationCard()}
+              <MapPreview coords={schoolCoords} location={universityData.location}/>
+              {/* {locationCard()} */}
             </section> 
         </div>}
       </>
   )
+}
 
+function MapPreview({coords, location}) {
+
+  const [map, setMap] = useState(null)
+  console.log("coords in MapPreview", coords)
+
+  const onLoad = useCallback(function callback(map) {
+    const bounds = new window.google.maps.LatLngBounds();
+    map.fitBounds(bounds);
+    setMap(map)
+  }, [map])
+
+  const onUnmount = useCallback(function callback(map) {
+    setMap(null)
+  }, [setMap])
+
+  const { isLoaded } = useJsApiLoader({
+    id: 'google-map-script',
+    googleMapsApiKey: "AIzaSyBQGTNOnMfl1Gk-4D8VWaB2-H5yuFFMM44",
+  })
+
+  return isLoaded ? (
+    <div className="ml-8">
+      <div className="font-bold">Oshawa Campus</div>
+        <div  dangerouslySetInnerHTML={{ __html: location.replace(/\n/g, "<br />") }}></div>
+        <GoogleMap
+          mapContainerStyle={{
+            width: '60%',
+            height: '400px',
+            margin: '15px auto'
+          }}
+          defaultCenter={coords}
+          center={coords}
+          location={coords}
+          zoom={17}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+        ></GoogleMap>
+      </div>
+    ) : <></>
 }
