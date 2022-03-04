@@ -9,68 +9,70 @@ export default function FilterBar({didUpdateFilter}) {
     const categories = ["Arts", "Engineering", "Science", "Mathematics", "Environment", "Health"]
     categories.sort()
 
-    const schools = ["University of Toronto",
-        "University of Waterloo",
-        "York University",
-        "Queen's University",
-        "McMaster University",
-        "Western University",
-        "Carleton University",
-        "Ryerson University",
-        "University of Guelph",
+    const schools = [
         "University of Ottawa",
-        "University of Windsor",
+        "University of Waterloo",
+        "Nipissing University",
+        "Université de l'Ontario français",
         "Brock University",
+        "Lakehead University",
+        "OCAD University",
+        "University of Toronto",
+        "Ontario Tech University",
+        "Carleton University",
+        "University of Guelph",
         "Wilfrid Laurier University",
         "Trent University",
-        "Lakehead University",
-        "Ontario Tech University",
-        "Laurentian University",
-        "OCAD University",
-        "Nipissing University",
+        "Ryerson University",
+        "McMaster University",
         "Royal Military College of Canada",
+        "Queen's University",
+        "University of Windsor",
         "Algoma University",
-        "Redeemer University College",
-        "Collège Universitaire Dominicain",
-        "Université de Hearst"
+        "Laurentian University",
+        "Western University",
+        "York University",
     ]
     schools.sort()
     const cities = [
-        "Toronto",
-        "Waterloo",
-        "Kingston",
-        "Hamilton",
-        "London",
-        "Guelph",
-        "Ottawa",
-        "Windsor",
-        "St. Catharines",
-        "Waterloo",
-        "Peterborough",
-        "Thunder Bay",
-        "Oshawa",
         "Sudbury",
+        "Mississauga",
+        "Ottawa",
+        "Waterloo",
+        "Hearst",
         "North Bay",
-        "Kingston",
+        "Guelph",
         "Sault Ste. Marie",
-        "Ancaster"
+        "York",
+        "Hamilton",
+        "Brantford",
+        "London",
+        "Windsor",
+        "Oshawa",
+        "Toronto",
+        "Thunder Bay",
+        "Kingston",
+        "Peterborough",
+        "St. Catharines",
     ]
+
+    
     cities.sort()
 
     return (
         <div className="overflow-auto flex flex-col drop-shadow-lg bg-white min-w-max max-w-fit min-h-screen z-10" 
         style={{filter: "drop-shadow(2px 0px 4px rgb(0, 0, 0, 0.5))"}}>
             <div className="m-3 flex flex-col">
-                <FilterItem  onUpdate={didUpdateFilter} value={'School'} filters={schools} />
-                <FilterItem onUpdate={didUpdateFilter} value={'Category'} filters={categories} />
-                <FilterItem onUpdate={didUpdateFilter} value={'City'} filters={cities} />
+                <FilterItem onUpdate={didUpdateFilter} value={'School'} filters={schools} filterKey={"schools_filter"} />
+                <FilterItem onUpdate={didUpdateFilter} value={'Category'} filters={categories} filterKey={"categories_filter"} />
+                <FilterItem onUpdate={didUpdateFilter} value={'City'} filters={cities} filterKey={"cities_filter"} />
             </div>
         </div>
     )
 
 }
 
-function FilterItem({value, filters, onUpdate}) {
+function FilterItem({value, filters, filterKey, onUpdate}) {
 
     const [isExpanded, setIsExpanded] = useState(false)
 
@@ -90,7 +92,7 @@ function FilterItem({value, filters, onUpdate}) {
                         filters.map((item, index) => {
                             return (
                                 <div className={"mx-2 flex items-center "} key={index}>
-                                    <Checkbox onChange={() => onUpdate(item)}/>
+                                    <Checkbox onChange={() => onUpdate(item, filterKey)}/>
                                     <div className="text-left">{item}</div>
                                 </div>
                             )

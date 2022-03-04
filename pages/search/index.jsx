@@ -22,7 +22,7 @@ export default function Search() {
   const [ programCardOpen, setProgramCardOpen ] = useState(false);
   const [ offset, setOffset ] = useState(0);
   const [ currentQuery, setCurrentQuery ] = useState(0);
-  const [ filters, setFilters ] = useState([]);
+  const [ filters, setFilters ] = useState({});
   const [ loadedAll, setLoadedAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -33,6 +33,7 @@ export default function Search() {
   const router = useRouter()
 
   useEffect( async () => {
+    setLoading(true)
     await fetchPrograms(router.query.query)
     await getAuthenticatedUser( async (authUser) => {
       if (!authUser) { return }
@@ -101,12 +102,18 @@ export default function Search() {
     return text
   }
 
-  const handleFilterChange = (filterItem) => {
-    var index = filters.indexOf(filterItem);    // <-- Not supported in <IE9
+  const handleFilterChange = (filterItem, filterKey) => {
+    if (!filters[filterKey]) {
+      filters[filterKey] = [filterItem]
+      setFilters(filters)
+      return
+    }
+    var index = filters[filterKey].indexOf(filterItem)
     if (index == -1) {
-        setFilters([...filters, filterItem])
+        filters[filterKey] = [...filters[filterKey], filterItem]
+        setFilters(filters)
     } else {
-        filters.splice(index, 1);
+        filters[filterKey].splice(index, 1);
         setFilters(filters)
     }
   }

@@ -1,9 +1,14 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
+import CreateReviewModal from './reviews/create_modal';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
-import { useState, useCallback, useEffect } from 'react'
+
+import { useState, useEffect } from 'react'
+import { useRouter } from 'next/dist/client/router';
+
+import { getReview } from '../../api/reviews';
 
 export default function ExpandedCard({open, program, onClose}) {
 
@@ -11,13 +16,19 @@ export default function ExpandedCard({open, program, onClose}) {
   const [programData, setProgramData] = useState(null)
   const [schoolCoords, setSchoolCoords] = useState(null)
   const [universityData, setUniversityData] = useState(null)
-  const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
+  const [showModal, setShowModal] = useState(false)
+  const [reviews, setReviews] = useState([])
 
-  useEffect(() => { 
+  const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
+  const router = useRouter()
+
+  useEffect( async () => { 
     if (!program) { return }
     setProgramData(program.data.program_data)
     setUniversityData(program.data.uni_data)
     const coords = program.data.uni_data.google_maps_url.split("/").pop().split(",")
+    const fetchedReviews = await getReview(program.program_key)
+    setReviews(fetchedReviews)
     setSchoolCoords({
       lat: Number(coords[0]),
       lng: Number(coords[1]),
@@ -52,26 +63,31 @@ export default function ExpandedCard({open, program, onClose}) {
         backgroundPosition: 'center'
       }}/>
       <div className="ml-10 flex flex-col w-44">
-        <div className="cursor-pointer rounded-xl bg-violet-700 px-10 py-3 my-2 text-white text-sm">See Related</div>
-        <div className="cursor-pointer rounded-xl bg-violet-700 px-10 py-3 my-2 text-white text-sm">Visit Website</div>
+        <div 
+          className="cursor-pointer rounded-xl bg-violet-700 px-10 py-3 my-2 text-white text-sm"
+          onClick={() => router.push(programData?.program_website)}
+          >
+          Visit Website
+        </div>
       </div>
   </div>)
 
-  const desc = () => (<div className="p-6 mb-8">
-    <div className="flex">
-      <div className="flex flex-col">
-        <h1 className="mb-5 text-xl">
-          <span className="font-semibold">{programData?.degree}</span>
-          {' - '}  
-          <span className="italic">{universityData?.name}</span>
-        </h1>
-        <p>{programData?.notes ?? programData?.description}</p>
+  const desc = () => (
+  <div className="p-6 mb-8">
+      <div className="flex">
+        <div className="flex flex-col">
+          <h1 className="mb-5 text-xl">
+            <span className="font-semibold">{program?.program_name}</span>
+            {' - '}  
+            <span className="italic">{universityData?.name}</span>
+          </h1>
+          <p>{programData?.notes ?? programData?.description}</p>
+        </div>
       </div>
-    </div>
-  </div>)
+    </div>)
 
   const breakdown = () => {
-    const points = ["$7,865 / term tuition", "Located in Waterloo, Ontario", "OUAC Program Code: JWA", "80%+ admission average"]
+    const points = [`Located at ${programData.campus}`, `OUAC Program Code: ${programData.ouac_program_code}`, `${programData.grade_range} minimum`, `${programData.instruction_language} instruction language`]
     return (<div>
       <div className="text-xl font-medium mt-10 mb-4">
         Breakdown
@@ -118,19 +134,19 @@ export default function ExpandedCard({open, program, onClose}) {
     </div>)
   }
 
-  const review = (text, ratings, index) => {
+  const reviewComponent = ({review, ratings}, index) => {
     const borderColor = colors[index % colors.length]
     return (
     <div className={`shadow-xl mt-8 w-5/6 mx-auto rounded-xl bg-white border-t-16 border-${borderColor} p-4`}>
-      <div className="flex items-center">
-        <div className="w-16 h-14 rounded-full bg-gray-100"></div>
-        <div className="ml-4">{text}</div>
-        <div>
-          {ratings.map(({label, percent}, index) => ratingDotBar(label, percent, index))}
+        <div className="flex items-center">
+          <div className="ml-4">{review}</div>
+          <div className="ml-auto">
+            {ratings.map(({value, label}, index) => ratingDotBar(label, value/5.0, index))}
+          </div>
         </div>
       </div>
-    </div>
-  )}
+    )
+  }
 
   const ratingDotBar = (label, level, key) => {
     const numDots = 5
@@ -146,19 +162,23 @@ export default function ExpandedCard({open, program, onClose}) {
   }
 
   const addReviewButton = () => (
-    <div>
-      Add Review
+    <div onClick={() => setShowModal(true)}
+          className={`cursor-pointer mt-8 w-5/6 mx-auto rounded-xl bg-white border-2 border-dashed border-black p-4`}>
+      <div className="flex items-center">
+        <div className="mx-auto">Add Review</div>
+      </div>
     </div>
   )
 
   return (
       <>
-        {open && <div className={"flex-col rounded-lg py-8 mt-16 w-2/3 mx-auto  min-w-2/3 mb-8 bg-white shadow text-left"}>
+        {open && <div className={"flex-col rounded-lg py-8 mt-16 w-full mx-auto lg:w-2/3 mb-8 bg-white shadow text-left"}>
           <FontAwesomeIcon onClick={onClose} className="cursor-pointer ml-8" size="2x" icon={faTimes} />
+          <CreateReviewModal open={showModal} onClose={() => setShowModal(false)} programName={program?.program_name} schoolName={universityData?.name} programId={program?.program_key}/>
             <section className="px-8">
               <div className="flex">
                 {header()}
-                {/* {breakdown()} */}
+                {breakdown()}
                 <FontAwesomeIcon onClick={addBookmark} className={`cursor-pointer -mt-10 text-right ml-auto ${addedBookmark && "text-amber-500"}`} size="2x" icon={faBookmark} />
               </div>
               {desc()}
@@ -170,28 +190,31 @@ export default function ExpandedCard({open, program, onClose}) {
               </div>
               <div>
                 {ratingBars()}
-                {review(
-                  "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview,
-                  0
-                  )}
-                  {review(
-                  "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview,
-                  1
-                  )}
-                  {review(
-                  "This program is comprehensive and gave me the skills to get the jobs of my dreams post graduation",
-                  mockReview,
-                  2
-                  )}
+                {reviews?.map((review, idx) => (
+                  reviewComponent(review, idx)
+                ))}
                   {addReviewButton()}
               </div>
             </section>
             <section>
+              <div className='h-1 w-full bg-violet-700 mb-8'/>
               <MapPreview coords={schoolCoords} location={universityData.location}/>
-              {/* {locationCard()} */}
             </section> 
+            <section>
+              <div className='h-1 w-full bg-violet-700 mb-8'/>
+              <div className="text-xl font-medium mt-10 ml-8 mb-8">
+                Entry Requirements
+              </div>
+              {programData.grade_range && <div className="ml-10 mb-4"> Minimum grade: {programData.grade_range}</div>}
+              {
+                
+                programData['requirements: lis']?.map((requirement) => {
+                  return (<div className="ml-10">
+                    • {requirement}
+                  </div>)
+                })
+              }
+            </section>
         </div>}
       </>
   )
@@ -199,28 +222,15 @@ export default function ExpandedCard({open, program, onClose}) {
 
 function MapPreview({coords, location}) {
 
-  const [map, setMap] = useState(null)
-  console.log("coords in MapPreview", coords)
-
-  const onLoad = useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds();
-    map.fitBounds(bounds);
-    setMap(map)
-  }, [map])
-
-  const onUnmount = useCallback(function callback(map) {
-    setMap(null)
-  }, [setMap])
-
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: "AIzaSyBQGTNOnMfl1Gk-4D8VWaB2-H5yuFFMM44",
   })
 
   return isLoaded ? (
-    <div className="ml-8">
-      <div className="font-bold">Oshawa Campus</div>
-        <div  dangerouslySetInnerHTML={{ __html: location.replace(/\n/g, "<br />") }}></div>
+    <div>
+      <div className="ml-20 font-bold">Oshawa Campus</div>
+        <div className="ml-20 mb-6" dangerouslySetInnerHTML={{ __html: location.replace(/\n/g, "<br />") }}></div>
         <GoogleMap
           mapContainerStyle={{
             width: '60%',
@@ -230,9 +240,7 @@ function MapPreview({coords, location}) {
           defaultCenter={coords}
           center={coords}
           location={coords}
-          zoom={17}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
+          zoom={15}
         ></GoogleMap>
       </div>
     ) : <></>

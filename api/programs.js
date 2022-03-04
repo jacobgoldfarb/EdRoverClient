@@ -1,7 +1,3 @@
-import { collection } from "firebase/firestore";
-import { db } from "./firebase"
-
-
 const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/program/')
 const DEV_SERVICE_URL = new URL('http://127.0.0.1:5000/program')
 
@@ -16,7 +12,6 @@ const getProgram = async (id) => {
     return Error(resp.statusText)
   }
   const body = await resp.json()
-  console.log(body)
   return body
 }
 
