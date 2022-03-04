@@ -14,12 +14,15 @@ export default function Home() {
 
   const router = useRouter()
 
-  useEffect( async () => {
-    await getAuthenticatedUser(async (authUser) => {
-      if (!authUser) { return }
-      const userData = await getUserData(authUser.uid)
-      setUser(userData)
-    })
+  useEffect( () => {
+    const getUser = async () => {
+      await getAuthenticatedUser(async (authUser) => {
+        if (!authUser) { return }
+        const userData = await getUserData(authUser.uid)
+        setUser(userData)
+      })
+    }
+    getUser()
   }, [setUser])
 
   const handleSearchChange = (e) => {

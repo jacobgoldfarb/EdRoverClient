@@ -22,13 +22,16 @@ export default function ExpandedCard({open, program, onClose}) {
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
   const router = useRouter()
 
-  useEffect( async () => { 
+  useEffect( () => { 
     if (!program) { return }
     setProgramData(program.data.program_data)
     setUniversityData(program.data.uni_data)
     const coords = program.data.uni_data.google_maps_url.split("/").pop().split(",")
-    const fetchedReviews = await getReview(program.program_key)
-    setReviews(fetchedReviews)
+    const getReviews = async () => {
+      const fetchedReviews = await getReview(program.program_key)
+      setReviews(fetchedReviews)
+    }
+    getReviews()
     setSchoolCoords({
       lat: Number(coords[0]),
       lng: Number(coords[1]),

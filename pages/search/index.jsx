@@ -32,15 +32,18 @@ export default function Search() {
 
   const router = useRouter()
 
-  useEffect( async () => {
+  useEffect( () => {
     setLoading(true)
-    await fetchPrograms(router.query.query)
-    await getAuthenticatedUser( async (authUser) => {
-      if (!authUser) { return }
-      const userData = await getUserData(authUser.uid)
-      setUserData(userData)
-      setIsAuthenticated(true)
-    })
+    getData = async () => {
+      await fetchPrograms(router.query.query)
+      await getAuthenticatedUser( async (authUser) => {
+        if (!authUser) { return }
+        const userData = await getUserData(authUser.uid)
+        setUserData(userData)
+        setIsAuthenticated(true)
+      })
+    }
+    getData()
     setLoading(false)
   }, [router])
 
