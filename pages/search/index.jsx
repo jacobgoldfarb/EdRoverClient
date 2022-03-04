@@ -34,7 +34,7 @@ export default function Search() {
 
   useEffect( () => {
     setLoading(true)
-    getData = async () => {
+    const getData = async () => {
       await fetchPrograms(router.query.query)
       await getAuthenticatedUser( async (authUser) => {
         if (!authUser) { return }
