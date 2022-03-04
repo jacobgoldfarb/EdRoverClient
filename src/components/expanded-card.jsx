@@ -208,8 +208,8 @@ export default function ExpandedCard({open, program, onClose}) {
               {programData.grade_range && <div className="ml-10 mb-4"> Minimum grade: {programData.grade_range}</div>}
               {
                 
-                programData['requirements: lis']?.map((requirement) => {
-                  return (<div className="ml-10">
+                programData['requirements: lis']?.map((requirement, idx) => {
+                  return (<div key={idx} className="ml-10">
                     • {requirement}
                   </div>)
                 })
