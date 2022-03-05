@@ -25,13 +25,13 @@ const addFiltersToUrl = (url, filters) => {
   const school_filters = filters.schools_filter?.join(",")
   const category_filters = filters.categories_filter?.join(",")
   if (city_filters) {
-    url += `&cities_filters="${city_filters}"`
+    url += `&city_filter=${city_filters}`
   }
   if (school_filters) {
-    url += `&school_filters="${school_filters}"`
+    url += `&school_filter=${school_filters}`
   }
   if (category_filters) {
-    url += `&category_filters="${category_filters}"`
+    url += `&category_filters=${category_filters}`
   }
   return url
 }

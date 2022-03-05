@@ -34,6 +34,7 @@ export default function Search() {
 
   useEffect( () => {
     setLoading(true)
+    setCurrentQuery(router.query?.query ?? "")
     const getData = async () => {
       await fetchPrograms(router.query.query)
       await getAuthenticatedUser( async (authUser) => {
@@ -60,19 +61,22 @@ export default function Search() {
   }
 
   const handleNewSearch = async (query) => {
+    setLoadedAll(false)
+    const newQuery = query == "" ? currentQuery : query
     setLoading(true)
-    await fetchPrograms(query)
+    await fetchPrograms(newQuery)
 
     router.push({
       pathname: '/search',
-      query: { query: query },
+      query: { query: newQuery },
     }, undefined, {shallow: true})
+    setCurrentQuery(newQuery)
     setLoading(false)
   }
 
   const handleLoadMore = async () => {
     setLoading(true)
-    const programs = await searchPrograms(currentQuery, offset + limit, filters)
+    const programs = await searchPrograms(currentQuery, offset + limit, limit, filters)
     if (programs instanceof Error ) {
       return
     }
