@@ -2,12 +2,15 @@ import Checkbox from '@mui/material/Checkbox';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
+import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 
 
-export default function FilterBar({didUpdateFilter}) {
+export default function FilterBar({didUpdateFilter, handleSearch}) {
     const categories = ["Arts", "Engineering", "Science", "Mathematics", "Environment", "Health"]
     categories.sort()
+
+    const [needsUpdate, setNeedsUpdate] = useState(false)
 
     const schools = [
         "University of Ottawa",
@@ -56,6 +59,11 @@ export default function FilterBar({didUpdateFilter}) {
         "St. Catharines",
     ]
 
+    const handleFilterUpdate = (item, key) => {
+        didUpdateFilter(item, key)
+        setNeedsUpdate(true)
+    }
+
     
     cities.sort()
 
@@ -63,16 +71,25 @@ export default function FilterBar({didUpdateFilter}) {
         <div className="overflow-auto flex flex-col drop-shadow-lg bg-white min-w-max max-w-fit min-h-screen z-10" 
         style={{filter: "drop-shadow(2px 0px 4px rgb(0, 0, 0, 0.5))"}}>
             <div className="m-3 flex flex-col">
-                <FilterItem onUpdate={didUpdateFilter} value={'School'} filters={schools} filterKey={"schools_filter"} />
-                <FilterItem onUpdate={didUpdateFilter} value={'Category'} filters={categories} filterKey={"categories_filter"} />
-                <FilterItem onUpdate={didUpdateFilter} value={'City'} filters={cities} filterKey={"cities_filter"} />
+                
+                {needsUpdate && <div className="flex items-baseline">
+                    <div className="font-semibold text-indigo-800 mt-2 cursor-pointer mx-3" onClick={() => {
+                        handleSearch()
+                        setNeedsUpdate(false)
+                    }}>Update Results</div>
+                    <FontAwesomeIcon className={ "text-indigo-800"} icon={faArrowCircleRight} />
+                </div>    
+                }
+                <FilterItem onUpdate={handleFilterUpdate} value={'School'} filters={schools} filterKey={"schools_filter"} />
+                <FilterItem onUpdate={handleFilterUpdate} value={'Category'} filters={categories} filterKey={"categories_filter"} />
+                <FilterItem onUpdate={handleFilterUpdate} value={'City'} filters={cities} filterKey={"cities_filter"} />
             </div>
         </div>
     )
 
 }
 
-function FilterItem({value, filters, filterKey, onUpdate}) {
+function FilterItem({value, filters, filterKey, onUpdate, needs}) {
 
     const [isExpanded, setIsExpanded] = useState(false)
 
@@ -92,7 +109,9 @@ function FilterItem({value, filters, filterKey, onUpdate}) {
                         filters.map((item, index) => {
                             return (
                                 <div className={"mx-2 flex items-center "} key={index}>
-                                    <Checkbox onChange={() => onUpdate(item, filterKey)}/>
+                                    <Checkbox onChange={() => {
+                                        onUpdate(item, filterKey)
+                                    }}/>
                                     <div className="text-left">{item}</div>
                                 </div>
                             )

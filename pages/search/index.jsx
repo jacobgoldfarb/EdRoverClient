@@ -1,3 +1,4 @@
+import { CardContainer } from './../../src/components/search/card-container';
 import Head from 'next/head'
 import Navbar from '../../src/components/navbar'
 import ExpandedCard from '../../src/components/expanded-card'
@@ -13,31 +14,31 @@ import { getAuthenticatedUser, getUserData } from '../../api/auth'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router'
 
+
 import { faSadTear } from '@fortawesome/free-solid-svg-icons'
 
 export default function Search() {
 
-  const [ cardDetails, setCardDetails ] = useState([])
-  const [ activeProgram, setActiveProgram ] = useState(null);
-  const [ programCardOpen, setProgramCardOpen ] = useState(false);
-  const [ offset, setOffset ] = useState(0);
-  const [ currentQuery, setCurrentQuery ] = useState(0);
-  const [ filters, setFilters ] = useState({});
-  const [ loadedAll, setLoadedAll] = useState(false)
+  const [cardDetails, setCardDetails] = useState([])
+  const [activeProgram, setActiveProgram] = useState(null);
+  const [programCardOpen, setProgramCardOpen] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [currentQuery, setCurrentQuery] = useState(0);
+  const [filters, setFilters] = useState({});
+  const [loadedAll, setLoadedAll] = useState(false)
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userData, setUserData] = useState(null)
-  const limit = 30  
-  const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
+  const limit = 30
 
   const router = useRouter()
 
-  useEffect( () => {
+  useEffect(() => {
     setLoading(true)
     setCurrentQuery(router.query?.query ?? "")
     const getData = async () => {
       await fetchPrograms(router.query.query)
-      await getAuthenticatedUser( async (authUser) => {
+      await getAuthenticatedUser(async (authUser) => {
         if (!authUser) { return }
         const userData = await getUserData(authUser.uid)
         setUserData(userData)
@@ -50,8 +51,9 @@ export default function Search() {
 
   const fetchPrograms = async (query) => {
     setCurrentQuery(query)
+    console.log("Fetching programs", filters)
     const programs = await searchPrograms(query, offset, limit, filters)
-    if (programs instanceof Error ) {
+    if (programs instanceof Error) {
       return
     }
     setCardDetails([...programs.program_cards]);
@@ -61,6 +63,7 @@ export default function Search() {
   }
 
   const handleNewSearch = async (query) => {
+    console.log("New search...", query)
     setLoadedAll(false)
     const newQuery = query == "" ? currentQuery : query
     setLoading(true)
@@ -69,7 +72,7 @@ export default function Search() {
     router.push({
       pathname: '/search',
       query: { query: newQuery },
-    }, undefined, {shallow: true})
+    }, undefined, { shallow: true })
     setCurrentQuery(newQuery)
     setLoading(false)
   }
@@ -77,7 +80,7 @@ export default function Search() {
   const handleLoadMore = async () => {
     setLoading(true)
     const programs = await searchPrograms(currentQuery, offset + limit, limit, filters)
-    if (programs instanceof Error ) {
+    if (programs instanceof Error) {
       return
     }
     if (programs?.program_cards.length < limit) {
@@ -87,11 +90,11 @@ export default function Search() {
     setCardDetails([...programs.program_cards, ...cardDetails]);
     setLoading(false)
   }
-  
+
   const handleCardClick = async (index) => {
     const selectedProgram = cardDetails[index]
     const fullProgramDetails = await getProgram(selectedProgram.program_key)
-    setActiveProgram({...fullProgramDetails, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png"})
+    setActiveProgram({ ...fullProgramDetails, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png" })
     setProgramCardOpen(true)
     const fullProgram = await getProgram(selectedProgram.program_key)
   }
@@ -99,14 +102,6 @@ export default function Search() {
   const closeExpandedCard = () => {
     setActiveProgram(null)
     setProgramCardOpen(false)
-  }
-
-  const truncateLongDesc = (text) => {
-    if (!text) { return text }
-    if (text.length > 300) {
-      text = text.substring(0, 300) + "..."
-    }
-    return text
   }
 
   const handleFilterChange = (filterItem, filterKey) => {
@@ -117,38 +112,16 @@ export default function Search() {
     }
     var index = filters[filterKey].indexOf(filterItem)
     if (index == -1) {
-        filters[filterKey] = [...filters[filterKey], filterItem]
-        setFilters(filters)
+      filters[filterKey] = [...filters[filterKey], filterItem]
+      setFilters(filters)
     } else {
-        filters[filterKey].splice(index, 1);
-        setFilters(filters)
+      filters[filterKey].splice(index, 1);
+      setFilters(filters)
     }
   }
 
-  const getCards = () => (
-    <div className={"w-full mx-auto mt-12 mb-10 items-center flex flex-wrap justify-center gap-14 "}>
-      {
-        cardDetails?.map((detail, index) => {
-        const {program_key, program_name, uni_name, description, image_url } = detail
-        const descriptionPreview = truncateLongDesc(description)
-          return (<Card 
-            key={program_key}
-            id={program_key}
-            index={index}
-            programName={program_name}
-            schoolName={uni_name}
-            descPreview={descriptionPreview}
-            thumbnailUrl={"https://i.ibb.co/SRwz8gK/watelroo-Image.png"}
-            topColor={colors[index%colors.length]}
-            handleLearnMore={handleCardClick}
-          />)
-        })
-      }
-    </div>
-  )
-
   const showLoadMore = () => (
-    cardDetails.length > 0 && !programCardOpen && !loadedAll 
+    cardDetails.length > 0 && !programCardOpen && !loadedAll
   )
 
   const getLoadMore = () => {
@@ -158,13 +131,12 @@ export default function Search() {
   }
 
   const getEmptySetIndicator = () => (
-    !loading && cardDetails.length == 0 && 
+    !loading && cardDetails.length == 0 &&
     <>
-      <FontAwesomeIcon 
-
-        className="mx-auto text-white mb-4" 
+      <FontAwesomeIcon
+        className="mx-auto text-white mb-4"
         icon={faSadTear}
-        style={{width: "5rem", height: "5rem"}}
+        style={{ width: "5rem", height: "5rem" }}
       />
       <div className="text-white">{`Oops! We couldn't find any program matches for the query "${currentQuery}"`}</div>
     </>
@@ -176,26 +148,25 @@ export default function Search() {
         <title>EdRover</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <Navbar onSearch={handleNewSearch} defaultQuery={router.query?.query || ""} selected={3} authenticated={isAuthenticated}/>
-      
+      <Navbar onSearch={handleNewSearch} defaultQuery={router.query?.query || ""} selected={3} authenticated={isAuthenticated} />
+
       <div className={"flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20 "}>
         <div>
-          <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard}/>
+          <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard} />
         </div>
-      {!programCardOpen && <div className="flex">
-        <FilterBar didUpdateFilter={handleFilterChange}/>
-        <div className="w-full"> 
-          {getCards()}
-          {getEmptySetIndicator()}
-          {getLoadMore()}
-          {loading && <CircularProgress className="mx-auto"/>}
-        </div>
+        {!programCardOpen && <div className="flex">
+          <FilterBar didUpdateFilter={handleFilterChange} handleSearch={() => handleNewSearch(currentQuery)} />
+          <div className="w-full">
+            <CardContainer cardDetails={cardDetails} handleCardClick={handleCardClick}  />
+            {getEmptySetIndicator()}
+            {getLoadMore()}
+            {loading && <CircularProgress className="mx-auto" />}
+          </div>
         </div>}
-        
+
       </div>
-    <footer>
-    </footer>
+      <footer>
+      </footer>
     </div>
-    )
-  }
-  
+  )
+}

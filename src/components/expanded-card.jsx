@@ -9,6 +9,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router';
 
 import { getReview } from '../../api/reviews';
+import { postBookmark } from '../../api/bookmarks';
 
 export default function ExpandedCard({open, program, onClose}) {
 
@@ -39,6 +40,10 @@ export default function ExpandedCard({open, program, onClose}) {
   }, [program])
 
   const addBookmark = () => {
+    console.log("program.program_key", program.program_key)
+    if (!addedBookmark) {
+      postBookmark(program.program_key)
+    }
     setAddedBookmark(!addedBookmark)
   }
   
@@ -84,7 +89,7 @@ export default function ExpandedCard({open, program, onClose}) {
             {' - '}  
             <span className="italic">{universityData?.name}</span>
           </h1>
-          <p>{programData?.notes ?? programData?.description}</p>
+          <p>{programData?.description ?? ""}</p>
         </div>
       </div>
     </div>)
@@ -211,7 +216,7 @@ export default function ExpandedCard({open, program, onClose}) {
               {programData.grade_range && <div className="ml-10 mb-4"> Minimum grade: {programData.grade_range}</div>}
               {
                 
-                programData['requirements: lis']?.map((requirement, idx) => {
+                programData.requirements?.map((requirement, idx) => {
                   return (<div key={idx} className="ml-10">
                     • {requirement}
                   </div>)
