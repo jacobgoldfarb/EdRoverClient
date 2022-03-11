@@ -23,6 +23,7 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
         }}
         >
         {getImage()}
+        <hr className="mb-2"/>
         <div>
             <div className="font-medium px-3">
                 {programName} 
@@ -46,7 +47,7 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
             </div>
         </div>  
         <div className="mt-auto mb-3 mr-3 w-full cursor-pointer flex items-center" onClick={() => handleLearnMore(id)}>
-            <div className="ml-auto mr-3 mb-3">
+            <div className="ml-auto mr-3">
                 {'Learn More '} 
                 <FontAwesomeIcon className="text-gray-600 w-10 h-10 " icon={faChevronRight} />
             </div>
