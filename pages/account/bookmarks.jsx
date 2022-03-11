@@ -20,11 +20,9 @@ export default function Bookmarks() {
 
   useEffect( () => {
     getBookmarks((bookmarks) => {
-        console.log("Bookmarks", bookmarks)
         setBookmarks(bookmarks)
         bookmarks?.forEach((bookmark) => {
             
-            console.log("bookmark", bookmark)
         })
     })
   }, [router])

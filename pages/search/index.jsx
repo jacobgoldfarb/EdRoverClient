@@ -2,7 +2,6 @@ import { CardContainer } from './../../src/components/search/card-container';
 import Head from 'next/head'
 import Navbar from '../../src/components/navbar'
 import ExpandedCard from '../../src/components/expanded-card'
-import Card from '../../src/components/search/card'
 import FilterBar from '../../src/components/search/filter-bar'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import CircularProgress from '@mui/material/CircularProgress';
@@ -29,7 +28,11 @@ export default function Search() {
   const [loading, setLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [userData, setUserData] = useState(null)
+  const [ querySpellingError, setQuerySpellingError ] = useState(false)
+  const [ misspelledQuery, setMisspelledQuery ] = useState("")
+  
   const limit = 30
+  const BOOKMARKS_QUERY = '$bookmarks'
 
   const router = useRouter()
 
@@ -44,17 +47,25 @@ export default function Search() {
         setUserData(userData)
         setIsAuthenticated(true)
       })
+      setLoading(false)
     }
     getData()
-    setLoading(false)
-  }, [router])
+  }, [])
 
-  const fetchPrograms = async (query) => {
+  const fetchPrograms = async (query, autoCorrect=true) => {
+    if (query == BOOKMARKS_QUERY && !!userData) {
+      return
+    }
+    setQuerySpellingError(false)
     setCurrentQuery(query)
-    console.log("Fetching programs", filters)
-    const programs = await searchPrograms(query, offset, limit, filters)
+    const programs = await searchPrograms(query, offset, limit, filters, autoCorrect)
     if (programs instanceof Error) {
       return
+    }
+    if (programs.query != query) {
+      setQuerySpellingError(true)
+      setMisspelledQuery(query)
+      setCurrentQuery(programs.query)
     }
     setCardDetails([...programs.program_cards]);
     if (Number(programs?.program_cards.length) < limit) {
@@ -63,7 +74,6 @@ export default function Search() {
   }
 
   const handleNewSearch = async (query) => {
-    console.log("New search...", query)
     setLoadedAll(false)
     const newQuery = query == "" ? currentQuery : query
     setLoading(true)
@@ -75,6 +85,10 @@ export default function Search() {
     }, undefined, { shallow: true })
     setCurrentQuery(newQuery)
     setLoading(false)
+  }
+
+  const searchMisspelledQuery = () => {
+    fetchPrograms(misspelledQuery, false)
   }
 
   const handleLoadMore = async () => {
@@ -96,7 +110,6 @@ export default function Search() {
     const fullProgramDetails = await getProgram(selectedProgram.program_key)
     setActiveProgram({ ...fullProgramDetails, thumbnailUrl: "https://i.ibb.co/SRwz8gK/watelroo-Image.png" })
     setProgramCardOpen(true)
-    const fullProgram = await getProgram(selectedProgram.program_key)
   }
 
   const closeExpandedCard = () => {
@@ -154,16 +167,19 @@ export default function Search() {
         <div>
           <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard} />
         </div>
-        {!programCardOpen && <div className="flex">
-          <FilterBar didUpdateFilter={handleFilterChange} handleSearch={() => handleNewSearch(currentQuery)} />
+        <div className="flex">
+          <FilterBar hidden={programCardOpen} didUpdateFilter={handleFilterChange} handleSearch={() => handleNewSearch(currentQuery)} />
           <div className="w-full">
+          {querySpellingError && <div className="text-white mt-5">
+            <div>{`Showing results for`} <span className="italic font-bold">{currentQuery}</span></div>
+            <div>{`Search instead for`} <span onClick={searchMisspelledQuery} className="font-bold text-blue-100 underline cursor-pointer">{misspelledQuery}</span></div>
+          </div>}
             <CardContainer cardDetails={cardDetails} handleCardClick={handleCardClick}  />
             {getEmptySetIndicator()}
             {getLoadMore()}
             {loading && <CircularProgress className="mx-auto" />}
           </div>
-        </div>}
-
+        </div>
       </div>
       <footer>
       </footer>

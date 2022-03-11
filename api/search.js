@@ -1,10 +1,10 @@
 const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/search')
 const DEV_SERVICE_URL = new URL('http://127.0.0.1:5000/search')
 
-const searchPrograms = async (query, offset, limit, filters) => {
+const searchPrograms = async (query, offset, limit, filters, autoCorrect) => {
   if (!offset) { offset = 0 }
   if (!query) { return Error("no query") }
-  var url = SERVICE_URL + "?query=" + query + "&limit=" + limit + "&offset=" + offset 
+  var url = SERVICE_URL + "?query=" + query + "&limit=" +  limit + "&offset=" + offset + "&autocorrect=" + autoCorrect
   if (filters) { 
     url = addFiltersToUrl(url, filters)
   }
@@ -31,7 +31,7 @@ const addFiltersToUrl = (url, filters) => {
     url += `&school_filter=${school_filters}`
   }
   if (category_filters) {
-    url += `&category_filters=${category_filters}`
+    url += `&category_filter=${category_filters}`
   }
   return url
 }

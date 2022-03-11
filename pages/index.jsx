@@ -51,7 +51,7 @@ export default function Home() {
     
       <div className="min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20">
         <header className="font-header text-white text-3xl mx-5 mt-4">
-          Discover the perfect higher education plan for you.
+          Find the perfect higher education plan for you.
         </header>
       { user && <div className="font-header text-white text-3xl mx-5 mt-8">
           Welcome back, <span className="font-bold">{user.name}</span>!

@@ -25,8 +25,8 @@ export default function LandingAccountDropdown({className}) {
                 </div>
                 {isExpanded && <div className="flex flex-col text-center">
                     <hr/>
-                    <div className="mt-2"> {"Profile"} </div>
-                    <hr/>
+                    {/* <div className="mt-2"> {"Profile"} </div>
+                    <hr/> */}
                     <div className="mt-2" onClick={() => router.push('/account/bookmarks')}> {"Bookmarks"} </div>
                     <hr/>
                     <div className="my-2" onClick={handleLogOut}> {"Log Out"} </div>

@@ -40,7 +40,6 @@ export default function ExpandedCard({open, program, onClose}) {
   }, [program])
 
   const addBookmark = () => {
-    console.log("program.program_key", program.program_key)
     if (!addedBookmark) {
       postBookmark(program.program_key)
     }
@@ -95,7 +94,7 @@ export default function ExpandedCard({open, program, onClose}) {
     </div>)
 
   const breakdown = () => {
-    const points = [`Located at ${programData.campus}`, `OUAC Program Code: ${programData.ouac_program_code}`, `${programData.grade_range} minimum`, `${programData.instruction_language} instruction language`]
+    const points = [`Location: ${programData.campus}`, `OUAC Program Code: ${programData.ouac_program_code}`, `Minimum Grade: ${programData.grade_range}`, `Instruction Language: ${programData.instruction_language}`]
     return (<div>
       <div className="text-xl font-medium mt-10 mb-4">
         Breakdown

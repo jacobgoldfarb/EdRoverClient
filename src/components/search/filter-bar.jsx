@@ -7,8 +7,6 @@ import { useState } from 'react';
 
 
 export default function FilterBar({didUpdateFilter, handleSearch}) {
-    const categories = ["Arts", "Engineering", "Science", "Mathematics", "Environment", "Health"]
-    categories.sort()
 
     const [needsUpdate, setNeedsUpdate] = useState(false)
 
@@ -59,6 +57,18 @@ export default function FilterBar({didUpdateFilter, handleSearch}) {
         "St. Catharines",
     ]
 
+    const categories = {
+        "Engineering": "engineering",
+        "Architecture": "architecture",
+        "Arts": "art",
+        "Science": "science",
+        "Business": "business",
+        "Computer Science": "computer science",
+        "Education": "education",
+        "History": "history",
+        "Mathematics": "math",
+    }
+
     const handleFilterUpdate = (item, key) => {
         didUpdateFilter(item, key)
         setNeedsUpdate(true)
@@ -73,7 +83,7 @@ export default function FilterBar({didUpdateFilter, handleSearch}) {
             <div className="m-3 flex flex-col">
                 
                 {needsUpdate && <div className="flex items-baseline">
-                    <div className="font-semibold text-indigo-800 mt-2 cursor-pointer mx-3" onClick={() => {
+                    <div className="text-lg font-semibold text-indigo-800 mt-2 cursor-pointer mx-3" onClick={() => {
                         handleSearch()
                         setNeedsUpdate(false)
                     }}>Update Results</div>
@@ -81,7 +91,7 @@ export default function FilterBar({didUpdateFilter, handleSearch}) {
                 </div>    
                 }
                 <FilterItem onUpdate={handleFilterUpdate} value={'School'} filters={schools} filterKey={"schools_filter"} />
-                <FilterItem onUpdate={handleFilterUpdate} value={'Category'} filters={categories} filterKey={"categories_filter"} />
+                <FilterItem onUpdate={(item, filterKey) => handleFilterUpdate(categories[item], filterKey)} value={'Category'} filters={Object.keys(categories)} filterKey={"categories_filter"} />
                 <FilterItem onUpdate={handleFilterUpdate} value={'City'} filters={cities} filterKey={"cities_filter"} />
             </div>
         </div>

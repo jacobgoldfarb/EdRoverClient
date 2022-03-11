@@ -28,7 +28,6 @@ const getBookmarks = async (callback) => {
             var docRef = doc(db, 'users', user.uid);
             const docSnap = await getDoc(docRef);
             const docData = docSnap.data()
-            console.log('docData', docData)
             callback(docData?.bookmarks)
         })
     } catch(error) {
