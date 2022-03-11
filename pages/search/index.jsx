@@ -86,6 +86,7 @@ export default function Search() {
 
   const handleNewSearch = async (query) => {
     setLoadedAll(false)
+    setOffset(0)
     const newQuery = query == "" ? currentQuery : query
     setLoading(true)
     await fetchPrograms(newQuery)
