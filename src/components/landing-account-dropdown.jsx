@@ -27,7 +27,7 @@ export default function LandingAccountDropdown({className}) {
                     <hr/>
                     {/* <div className="mt-2"> {"Profile"} </div>
                     <hr/> */}
-                    <div className="mt-2" onClick={() => router.push('/account/bookmarks')}> {"Bookmarks"} </div>
+                    <div className="mt-2" onClick={() => router.push('/search?query=$bookmarks')}> {"Bookmarks"} </div>
                     <hr/>
                     <div className="my-2" onClick={handleLogOut}> {"Log Out"} </div>
                 </div>}

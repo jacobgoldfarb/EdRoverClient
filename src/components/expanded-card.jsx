@@ -1,6 +1,7 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import CreateReviewModal from './reviews/create_modal';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import { faBookmark } from '@fortawesome/free-solid-svg-icons'
@@ -9,22 +10,25 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router';
 
 import { getReview } from '../../api/reviews';
-import { postBookmark } from '../../api/bookmarks';
+import { postBookmark, deleteBookmark } from '../../api/bookmarks';
 
-export default function ExpandedCard({open, program, onClose}) {
+export default function ExpandedCard({open, program, onClose, bookmarked, authed}) {
 
+  const uniImageLookup = require('../utils/school_thumbnail_lookup.json');
   const [addedBookmark, setAddedBookmark] = useState(false)
   const [programData, setProgramData] = useState(null)
   const [schoolCoords, setSchoolCoords] = useState(null)
   const [universityData, setUniversityData] = useState(null)
   const [showModal, setShowModal] = useState(false)
   const [reviews, setReviews] = useState([])
+  const [loading, setLoading] = useState(true)
 
   const colors = ['violet-300', 'amber-200', 'emerald-400', 'rose-300', 'sky-300', 'orange-300', 'red-300']
   const router = useRouter()
 
   useEffect( () => { 
     if (!program) { return }
+    setAddedBookmark(bookmarked)
     setProgramData(program.data.program_data)
     setUniversityData(program.data.uni_data)
     const coords = program.data.uni_data.google_maps_url.split("/").pop().split(",")
@@ -37,11 +41,14 @@ export default function ExpandedCard({open, program, onClose}) {
       lat: Number(coords[0]),
       lng: Number(coords[1]),
     })
+    setLoading(false)
   }, [program])
 
   const addBookmark = () => {
     if (!addedBookmark) {
       postBookmark(program.program_key)
+    } else {
+      deleteBookmark(program.program_key)
     }
     setAddedBookmark(!addedBookmark)
   }
@@ -64,7 +71,7 @@ export default function ExpandedCard({open, program, onClose}) {
   const header = () => (
     <div className="flex flex-col w-1/2">
       <div className="w-96 h-40" style={{
-        backgroundImage: `url(${program.thumbnailUrl})`,
+        backgroundImage: `url(${uniImageLookup[universityData?.name]})`,
         backgroundSize: 'contain',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center'
@@ -94,7 +101,7 @@ export default function ExpandedCard({open, program, onClose}) {
     </div>)
 
   const breakdown = () => {
-    const points = [`Location: ${programData.campus}`, `OUAC Program Code: ${programData.ouac_program_code}`, `Minimum Grade: ${programData.grade_range}`, `Instruction Language: ${programData.instruction_language}`]
+    const points = [`Location: ${programData?.campus}`, `OUAC Program Code: ${programData?.ouac_program_code}`, `Minimum Grade: ${programData?.grade_range}`, `Instruction Language: ${programData?.instruction_language}`]
     return (<div>
       <div className="text-xl font-medium mt-10 mb-4">
         Breakdown
@@ -180,13 +187,14 @@ export default function ExpandedCard({open, program, onClose}) {
   return (
       <>
         {open && <div className={"flex-col rounded-lg py-8 mt-16 w-full mx-auto lg:w-2/3 mb-8 bg-white shadow text-left"}>
+          {loading && <CircularProgress className="mx-auto" />}
           <FontAwesomeIcon onClick={onClose} className="cursor-pointer ml-8" size="2x" icon={faTimes} />
           <CreateReviewModal open={showModal} onClose={() => setShowModal(false)} programName={program?.program_name} schoolName={universityData?.name} programId={program?.program_key}/>
             <section className="px-8">
               <div className="flex">
                 {header()}
                 {breakdown()}
-                <FontAwesomeIcon onClick={addBookmark} className={`cursor-pointer -mt-10 text-right ml-auto ${addedBookmark && "text-amber-500"}`} size="2x" icon={faBookmark} />
+                { authed && <FontAwesomeIcon onClick={addBookmark} className={`cursor-pointer -mt-10 text-right ml-auto ${addedBookmark && "text-amber-500"}`} size="2x" icon={faBookmark} />}
               </div>
               {desc()}
             </section>
@@ -205,7 +213,7 @@ export default function ExpandedCard({open, program, onClose}) {
             </section>
             <section>
               <div className='h-1 w-full bg-violet-700 mb-8'/>
-              <MapPreview coords={schoolCoords} location={universityData.location}/>
+              <MapPreview coords={schoolCoords} location={universityData?.location}/>
             </section> 
             <section>
               <div className='h-1 w-full bg-violet-700 mb-8'/>

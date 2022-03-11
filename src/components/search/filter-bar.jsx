@@ -6,7 +6,7 @@ import { faArrowCircleRight } from '@fortawesome/free-solid-svg-icons'
 import { useState } from 'react';
 
 
-export default function FilterBar({didUpdateFilter, handleSearch}) {
+export default function FilterBar({ hidden, didUpdateFilter, handleSearch}) {
 
     const [needsUpdate, setNeedsUpdate] = useState(false)
 
@@ -74,11 +74,12 @@ export default function FilterBar({didUpdateFilter, handleSearch}) {
         setNeedsUpdate(true)
     }
 
-    
+    const hideClass = hidden ? "hidden" : ""
+
     cities.sort()
 
     return (
-        <div className="overflow-auto flex flex-col drop-shadow-lg bg-white min-w-max max-w-fit min-h-screen z-10" 
+        <div className={"overflow-auto flex flex-col drop-shadow-lg bg-white min-w-max max-w-fit min-h-screen z-10 " + hideClass} 
         style={{filter: "drop-shadow(2px 0px 4px rgb(0, 0, 0, 0.5))"}}>
             <div className="m-3 flex flex-col">
                 

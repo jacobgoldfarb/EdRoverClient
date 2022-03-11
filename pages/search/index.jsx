@@ -9,6 +9,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { searchPrograms } from '../../api/search'
 import { getProgram } from '../../api/programs'
 import { getAuthenticatedUser, getUserData } from '../../api/auth'
+import { getProgramsFromBookmarkIds } from '../../api/bookmarks';
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/dist/client/router'
@@ -40,24 +41,34 @@ export default function Search() {
     setLoading(true)
     setCurrentQuery(router.query?.query ?? "")
     const getData = async () => {
-      await fetchPrograms(router.query.query)
       await getAuthenticatedUser(async (authUser) => {
-        if (!authUser) { return }
+        if (!authUser) { 
+          await fetchPrograms(router.query.query)
+          setLoading(false)
+          return 
+        }
         const userData = await getUserData(authUser.uid)
         setUserData(userData)
         setIsAuthenticated(true)
+        await fetchPrograms(router.query.query, true, userData)
+        
       })
-      setLoading(false)
     }
     getData()
-  }, [])
+  }, [router])
 
-  const fetchPrograms = async (query, autoCorrect=true) => {
-    if (query == BOOKMARKS_QUERY && !!userData) {
-      return
-    }
+  const fetchPrograms = async (query, autoCorrect=true, user=userData) => {
+
     setQuerySpellingError(false)
     setCurrentQuery(query)
+
+    if (query == BOOKMARKS_QUERY && !!user) {
+      const bookmarkedPrograms = await getProgramsFromBookmarkIds(user?.bookmarks)
+      setLoadedAll(true)
+      setCardDetails([...bookmarkedPrograms.program_cards]);
+      return
+    }
+    
     const programs = await searchPrograms(query, offset, limit, filters, autoCorrect)
     if (programs instanceof Error) {
       return
@@ -84,7 +95,6 @@ export default function Search() {
       query: { query: newQuery },
     }, undefined, { shallow: true })
     setCurrentQuery(newQuery)
-    setLoading(false)
   }
 
   const searchMisspelledQuery = () => {
@@ -165,7 +175,7 @@ export default function Search() {
 
       <div className={"flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20 "}>
         <div>
-          <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard} />
+          <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard} bookmarked={userData?.bookmarks.includes(activeProgram?.program_key)} authed={!!userData} />
         </div>
         <div className="flex">
           <FilterBar hidden={programCardOpen} didUpdateFilter={handleFilterChange} handleSearch={() => handleNewSearch(currentQuery)} />
@@ -174,7 +184,7 @@ export default function Search() {
             <div>{`Showing results for`} <span className="italic font-bold">{currentQuery}</span></div>
             <div>{`Search instead for`} <span onClick={searchMisspelledQuery} className="font-bold text-blue-100 underline cursor-pointer">{misspelledQuery}</span></div>
           </div>}
-            <CardContainer cardDetails={cardDetails} handleCardClick={handleCardClick}  />
+            <CardContainer hidden={programCardOpen} cardDetails={cardDetails} handleCardClick={handleCardClick}  />
             {getEmptySetIndicator()}
             {getLoadMore()}
             {loading && <CircularProgress className="mx-auto" />}
