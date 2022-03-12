@@ -51,7 +51,7 @@ export default function Search() {
         setUserData(userData)
         setIsAuthenticated(true)
         await fetchPrograms(router.query.query, true, userData)
-        
+        setLoading(false)
       })
     }
     getData()
