@@ -5,6 +5,7 @@ export default function Card({programName, schoolName, bulletPoints, descPreview
 
     function getImage() {
         return <div className="w-full h-20" style={{
+            height: '5rem',
             backgroundImage: `url(${thumbnailUrl})`,
             backgroundSize: 'contain',
             backgroundRepeat: 'no-repeat',

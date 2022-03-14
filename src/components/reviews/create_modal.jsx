@@ -92,7 +92,7 @@ export default function CreateReviewModal({open, onClose, programId, programName
         onClose={onClose}
         className={"mx-auto mb-6 rounded-xl overflow-scroll"}
         >
-            <Box className={" mt-32 w-2/3 text-center mx-auto bg-white rounded-xl"}>
+            <Box className={" mt-32 w-2/3 text-center mx-auto bg-white rounded-xl pl-4 pr-8"}>
                 <div className={"pt-8 text-xl font-medium"}>Reviewing {programName} at {schoolName}</div>
                 <div className="mt-10 flex flex-col">
                     {ratingOptions.map(
