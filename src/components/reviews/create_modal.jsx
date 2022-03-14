@@ -116,12 +116,15 @@ export default function CreateReviewModal({open, onClose, programId, programName
 }
 
 function RatingItem({title, body, id, didUpdateValue}) {
+    const [curValue, setCurValue] = useState(3)
+
     return (
         <div className="flex items-center mb-6">
-            <div className="w-1/2 ml-7 text-left">
+            <div className="w-1/2 mx-7 text-left">
                 <div className="font-semibold">{title}</div>
                 <div className="mt-2 text-gray-500 text-sm">{body}</div>
             </div>
+            <div className={`font-bold italic text-gray-400`}>1</div>
             <Slider
                 className="w-1/3 mx-8 justify-self-end"
                 defaultValue={3}
@@ -130,8 +133,12 @@ function RatingItem({title, body, id, didUpdateValue}) {
                 min={1}
                 max={5}
                 marks
-                onChange={(e) => didUpdateValue(id, e.target.value)}
+                onChange={(e) => {
+                    setCurValue(e.target.value)
+                    didUpdateValue(id, e.target.value)
+                }}
             />
+            <div className={`font-bold italic text-gray-400`}>5</div>
         </div>
     )
 }

@@ -176,7 +176,14 @@ export default function Search() {
 
       <div className={"flex flex-col min-h-screen bg-gradient-to-b from-blue-700 to-purple-800 text-center pt-20 "}>
         <div>
-          <ExpandedCard open={programCardOpen} program={activeProgram} onClose={closeExpandedCard} bookmarked={userData?.bookmarks.includes(activeProgram?.program_key)} authed={!!userData} />
+          <ExpandedCard 
+            open={programCardOpen} 
+            program={activeProgram} 
+            onClose={closeExpandedCard} 
+            bookmarked={userData?.bookmarks.includes(activeProgram?.data.program_data.ouac_program_code)} 
+            authed={!!userData}
+            role={"reviewer"} 
+          />
         </div>
         <div className="flex">
           <FilterBar hidden={programCardOpen} didUpdateFilter={handleFilterChange} handleSearch={() => handleNewSearch(currentQuery)} />
