@@ -259,7 +259,7 @@ function MapPreview({coords, location}) {
 
   return isLoaded ? (
     <div>
-      <div className="ml-20 font-bold">Oshawa Campus</div>
+      <div className="ml-20 font-bold">Campus Location</div>
         <div className="ml-20 mb-6" dangerouslySetInnerHTML={{ __html: location.replace(/\n/g, "<br />") }}></div>
         <GoogleMap
           mapContainerStyle={{
