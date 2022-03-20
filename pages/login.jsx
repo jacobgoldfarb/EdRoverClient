@@ -11,7 +11,7 @@ import { useRouter } from 'next/router'
 export default function Login() {
 
   const router = useRouter()
-  const [showSignUp, setShowSignUp] = useState(true)
+  const [showSignUp, setShowSignUp] = useState(false)
   const [isAlum, setIsAlum] = useState(false)
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
