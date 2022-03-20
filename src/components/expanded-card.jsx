@@ -104,7 +104,7 @@ export default function ExpandedCard({open, program, onClose, bookmarked, authed
   }
 
   const ratingBars = () => {
-    const ratingBarInformation = [
+    const ratingBarStub = [
       {
         label: "Student Life",
       },
@@ -118,13 +118,8 @@ export default function ExpandedCard({open, program, onClose, bookmarked, authed
         label: "Preparedness",
       },
     ]
-    ratingBarInformation.map((item, idx) => {
-      const averageRating = reviews.reduce((total, curReview) => {
-        return total + curReview.ratings[idx].value
-      }, 0) / reviews.length
-      item.percent = averageRating * 20
-      return item
-    })
+
+    const ratingBarInformation = aggregateRatings(ratingBarStub, reviews)
     return (<div className="ml-4">
       {ratingBarInformation.map(({label, percent}, index) => {
         const widthAmount = parseInt(percent * 0.01 * 12)
@@ -174,13 +169,23 @@ export default function ExpandedCard({open, program, onClose, bookmarked, authed
   }
 
   const addReviewButton = () => (
-    <div onClick={() => setShowModal(true)}
+    authed && <div onClick={() => setShowModal(true)}
           className={`cursor-pointer mt-8 w-5/6 mx-auto rounded-xl bg-white border-2 border-dashed border-black p-4`}>
       <div className="flex items-center">
         <div className="mx-auto">Add Review</div>
       </div>
     </div>
   )
+
+  const aggregateRatings = (ratingBarStub, allReviews) => {
+    return ratingBarStub.map((item, idx) => {
+      const averageRating = allReviews.reduce((total, curReview) => {
+        return total + curReview.ratings[idx].value;
+      }, 0) / allReviews.length;
+      item.percent = averageRating * 20;
+      return item;
+    });
+  }
 
   return (
       <>
