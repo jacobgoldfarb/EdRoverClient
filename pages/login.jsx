@@ -72,7 +72,7 @@ export default function Login() {
           <div className="flex flex-col w-5/6 items-center">
             <div className="flex mr-auto items-center">
                 <div className="mr-10">{"User type:"}</div>
-                <Dropdown options={userTypeOptions} onChange={updatedUserType} value={userTypeOptions[0]} placeholder="Select an option" />
+                <Dropdown options={userTypeOptions} onChange={updatedUserType} placeholder="Select an option" />
             </div>
             <label className="my-2 text-black w-full text-center flex flex-col items-center">
               <input onChange={(e) => setName(e.target.value)} className="bg-gray-200 rounded-xl h-12 w-full mb-2 pl-3" type="name" placeholder=" Name" />
