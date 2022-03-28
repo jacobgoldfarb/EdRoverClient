@@ -182,7 +182,7 @@ export default function ExpandedCard({open, program, onClose, bookmarked, authed
       const averageRating = allReviews.reduce((total, curReview) => {
         return total + curReview.ratings[idx].value;
       }, 0) / allReviews.length;
-      item.percent = averageRating * 20;
+      item.percent = Math.trunc(averageRating * 20);
       return item;
     });
   }
