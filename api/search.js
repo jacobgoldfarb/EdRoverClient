@@ -37,7 +37,7 @@ const addFiltersToUrl = (url, filters) => {
 }
 
 const getProgram = async (id) => {
-  const url = 'https://ed-rover.herokuapp.com/program/' + id
+  const url = 'https://ed-rover.herokuapp-06e06cd4e051.com/program/' + id
   var requestOptions = {
     method: 'GET',
     redirect: 'follow'
