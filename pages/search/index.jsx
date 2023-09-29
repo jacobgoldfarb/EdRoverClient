@@ -78,6 +78,7 @@ export default function Search() {
       setMisspelledQuery(query)
       setCurrentQuery(programs.query)
     }
+    console.log("programs", programs)
     setCardDetails([...programs.program_cards]);
     if (Number(programs?.program_cards.length) < limit) {
       setLoadedAll(true)

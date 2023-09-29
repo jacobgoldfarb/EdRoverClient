@@ -2,7 +2,7 @@ import { db } from "./firebase";
 import { doc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore"
 import { getAuthenticatedUser } from "./auth";
 
-const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/programs')
+const SERVICE_URL = new URL('https://ed-rover-06e06cd4e051.herokuapp.com/programs')
 const DEV_SERVICE_URL = new URL('http://127.0.0.1:5000/programs')
 
 const postBookmark = async (bookmark) => {

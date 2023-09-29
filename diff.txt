@@ -1,0 +1,37 @@
+31e3811 (HEAD -> main, origin/main, origin/HEAD) Fixed sign up error
+8929d2d Fixed num -> int error
+b61eec4 Added expanded card auth logic
+04c5db8 login default changed
+8a5e913 Updated oshawa campus title
+48a8702 Fixed some uni logos
+02e8ed9 Finished paragraphs
+38b4a3d Added more divs for about
+a475c66 Updates
+6353af3 Added about
+5a3027a bookmark and reviews stuff
+5fa7727 nits
+941c90f Offset 0 on new search
+fd4b666 Added bookmark logic
+df23566 Added hr to separate logo
+fb5a142 Added autocorrect support, uni images, fixed loading bug, added category filters
+c255e53 started bookmark functionality
+dd608bd Fixed filters
+7bb68e6 Fixed async ufn
+d26130e add bookmakrs
+1231b5d Fixed build for real
+b38899d fixed build
+b24025c Review logic
+852eabb Removed extra props
+81c701e misc errors
+0e25ce8 Renamed files and stuff
+358eb47 Updated auth menubar
+8d3ca49 Styling + nits
+a298ba9 added filtering
+80b96c7 Added limit + offset
+c252557 Finished hooking up search api
+c451e78 Styling + api interface' gp
+07be414 Align ratings bars
+817ebed Added api interface
+1da4661 Added missing map keys
+283a3d2 Cleanup
+df92c25 Initial commit

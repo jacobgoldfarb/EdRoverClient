@@ -1,0 +1,76 @@
+{
+    "functions": [
+        {
+            "path": "../src/components/expanded-card.jsx",
+            "name": "aggregateRatings",
+            "inputs": {
+                "1": [
+                    {
+                        "label": "Student Life"
+                    },
+                    {
+                        "label": "Liked It"
+                    },
+                    {
+                        "label": "Difficulty"
+                    },
+                    {
+                        "label": "Preparedness"
+                    }
+                ],
+                "2": [
+                    {
+                        "postType": "anon",
+                        "review": "really really  really really really  really really really  really good!",
+                        "ratings": [
+                            {
+                                "label": "Student Life",
+                                "value": 2
+                            },
+                            {
+                                "label": "Liked it",
+                                "value": 4
+                            },
+                            {
+                                "value": 4,
+                                "label": "Difficulty"
+                            },
+                            {
+                                "value": 1,
+                                "label": "Preparedness"
+                            }
+                        ]
+                    },
+                    {
+                        "postType": "known",
+                        "review": "SYDE '22 here! Absolutely loved this program - the academics, student life and professional opportunities made my experience special. Would definitely recommend to any ambitious, analytical and intellectually curious high school student. ",
+                        "ratings": [
+                            {
+                                "label": "Student Life",
+                                "value": 5
+                            },
+                            {
+                                "label": "Liked it",
+                                "value": 5
+                            },
+                            {
+                                "label": "Difficulty",
+                                "value": 3
+                            },
+                            {
+                                "value": 5,
+                                "label": "Preparedness"
+                            }
+                        ]
+                    }
+                ]
+            },
+            "expected_result": [
+                { "label": "Student Life", "percent": 70 },
+                { "label": "Liked It", "percent": 90 },
+                { "label": "Difficulty", "percent": 70 },
+                { "label": "Preparedness", "percent": 60 }
+              ]
+        }
+    ]
+}

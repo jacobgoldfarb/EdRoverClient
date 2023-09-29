@@ -1,4 +1,4 @@
-const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/program/')
+const SERVICE_URL = new URL('https://ed-rover-06e06cd4e051.herokuapp.com/program/')
 const DEV_SERVICE_URL = new URL('http://127.0.0.1:5000/program')
 
 const getProgram = async (id) => {

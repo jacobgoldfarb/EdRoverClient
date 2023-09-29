@@ -1,4 +1,4 @@
-const SERVICE_URL = new URL('https://ed-rover.herokuapp.com/search')
+const SERVICE_URL = new URL('https://ed-rover-06e06cd4e051.herokuapp.com/search')
 const DEV_SERVICE_URL = new URL('http://127.0.0.1:5000/search')
 
 const searchPrograms = async (query, offset, limit, filters, autoCorrect) => {
